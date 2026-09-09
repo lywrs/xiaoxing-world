@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>身边的支持 · 小星的世界</title>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-title: "ZCOOL KuaiLe", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+  --warm: #E8C9A3;
+  --warm-deep: #D4A574;
+  --text-main: #F3EEE7;
+  --text-sub: rgba(243, 238, 231, 0.72);
+  --text-dim: rgba(243, 238, 231, 0.5);
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text-main);
+  background: linear-gradient(180deg, #12102b 0%, #1d1440 45%, #251542 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 星空点缀 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, rgba(255,255,255,0.9) 50%, transparent 51%),
+    radial-gradient(1px 1px at 28% 62%, rgba(255,255,255,0.6) 50%, transparent 51%),
+    radial-gradient(2px 2px at 44% 10%, rgba(232,201,163,0.8) 50%, transparent 51%),
+    radial-gradient(1px 1px at 58% 38%, rgba(255,255,255,0.5) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 72% 74%, rgba(255,255,255,0.7) 50%, transparent 51%),
+    radial-gradient(1px 1px at 84% 22%, rgba(232,201,163,0.7) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 92% 56%, rgba(255,255,255,0.6) 50%, transparent 51%),
+    radial-gradient(1px 1px at 8% 84%, rgba(255,255,255,0.5) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 38% 90%, rgba(232,201,163,0.5) 50%, transparent 51%),
+    radial-gradient(1px 1px at 66% 8%, rgba(255,255,255,0.6) 50%, transparent 51%);
+  animation: twinkle 5s ease-in-out infinite alternate;
+  z-index: 0;
+}
+@keyframes twinkle { from { opacity: 0.55; } to { opacity: 1; } }
+
+.page {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+/* ====== 顶部 ====== */
+.header { text-align: center; margin-bottom: 18px; }
+.header-title-row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.header-face {
+  width: 62px;
+  flex: none;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(90,70,52,0.16));
+  animation: faceFloat 3s ease-in-out infinite;
+}
+.face-r { display: inline-flex; flex: none; transform: scaleX(-1); }
+@keyframes faceFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@media (max-width: 480px) {
+  .header-face { width: 46px; }
+  .header-title-row { gap: 10px; }
+}
+.page-title {
+  font-family: var(--font-title);
+  font-size: 1.7rem;
+  color: var(--warm);
+  text-shadow: 0 2px 12px rgba(232, 201, 163, 0.25);
+  margin-bottom: 6px;
+}
+.page-subtitle { font-size: 0.92rem; color: var(--text-sub); }
+
+/* ====== 筛选区 ====== */
+.filter-panel {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.select-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: "▾";
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: #8a7a68;
+  pointer-events: none;
+  font-size: 0.85rem;
+}
+select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #F5EFE6;
+  color: #4a4038;
+  border: none;
+  border-radius: 12px;
+  padding: 11px 30px 11px 12px;
+  font-size: 0.92rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  outline: none;
+  transition: box-shadow 0.25s;
+}
+select:focus { box-shadow: 0 0 0 2px rgba(232,201,163,0.65); }
+
+.type-tags {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.type-tags::-webkit-scrollbar { display: none; }
+.type-tag {
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--text-sub);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.type-tag.active {
+  background: linear-gradient(135deg, var(--warm), var(--warm-deep));
+  border-color: transparent;
+  color: #3a2f24;
+  font-weight: 600;
+}
+
+/* ====== 提示行 ====== */
+.result-hint {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  padding: 26px 10px;
+}
+
+/* ====== 分组 ====== */
+.group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 2px 10px;
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  color: var(--warm);
+}
+.group-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(232,201,163,0.4), transparent);
+}
+
+/* ====== 资源卡片 ====== */
+.res-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 14px 14px 12px;
+  margin-bottom: 12px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color 0.3s;
+}
+.res-card.open { border-color: rgba(232,201,163,0.45); }
+.res-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.res-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.35;
+}
+.res-tag {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.tag-公办学校 { color: #8FC7FF; background: rgba(143,199,255,0.14); border-color: rgba(143,199,255,0.4); }
+.tag-家长互助 { color: #93E3AE; background: rgba(147,227,174,0.13); border-color: rgba(147,227,174,0.4); }
+.tag-公益组织 { color: #F2C879; background: rgba(242,200,121,0.14); border-color: rgba(242,200,121,0.4); }
+.tag-大龄托养 { color: #CBA9F5; background: rgba(203,169,245,0.14); border-color: rgba(203,169,245,0.4); }
+.res-badge {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.68rem;
+  color: #FFD9B0;
+  background: rgba(255,217,176,0.12);
+  border: 1px solid rgba(255,217,176,0.35);
+  border-radius: 999px;
+  padding: 2px 8px;
+  vertical-align: 1px;
+}
+.res-desc { font-size: 0.86rem; color: var(--text-sub); line-height: 1.55; margin-top: 7px; }
+.res-meta { margin-top: 9px; display: grid; gap: 5px; }
+.res-meta-row {
+  display: flex;
+  gap: 7px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.res-meta-row .ico { flex-shrink: 0; }
+.res-meta-row span:last-child { word-break: break-all; }
+
+.more-btn {
+  margin-top: 11px;
+  width: 100%;
+  background: transparent;
+  border: 1px solid rgba(232,201,163,0.6);
+  color: var(--warm);
+  border-radius: 12px;
+  padding: 8px 0;
+  font-size: 0.86rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.more-btn:hover { background: rgba(232,201,163,0.12); }
+
+.res-more {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.35s ease, margin-top 0.4s ease;
+  margin-top: 0;
+}
+.res-card.open .res-more { opacity: 1; margin-top: 12px; }
+.more-inner {
+  border-top: 1px dashed rgba(232,201,163,0.3);
+  padding-top: 11px;
+  display: grid;
+  gap: 7px;
+}
+.more-row { display: flex; gap: 8px; font-size: 0.83rem; line-height: 1.55; }
+.more-row .k { flex-shrink: 0; color: var(--warm); opacity: 0.85; }
+.more-row .v { color: var(--text-sub); word-break: break-all; }
+.more-note {
+  margin-top: 3px;
+  font-size: 0.8rem;
+  color: #E8D5BC;
+  background: rgba(232,201,163,0.1);
+  border-radius: 10px;
+  padding: 8px 10px;
+  line-height: 1.6;
+}
+.res-img-box {
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.05);
+}
+.res-img-box.loading {
+  min-height: 96px;
+  border: 1px dashed rgba(232,201,163,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.res-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.res-img-cap {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  padding: 6px 10px 7px;
+  background: rgba(0,0,0,0.18);
+  text-align: center;
+}
+
+/* ====== 空状态 ====== */
+.empty-box {
+  text-align: center;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 30px 18px;
+  margin-top: 6px;
+}
+.empty-emoji { font-size: 2.2rem; margin-bottom: 10px; }
+.empty-title { font-size: 1rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.6; }
+.empty-tips { text-align: left; display: inline-block; color: var(--text-dim); font-size: 0.86rem; line-height: 1.9; margin-bottom: 16px; }
+.empty-tips li { list-style: none; }
+.empty-tips li::before { content: "· "; color: var(--warm); }
+.reco-btn {
+  background: linear-gradient(135deg, var(--warm), var(--warm-deep));
+  color: #3a2f24;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 26px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.reco-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(232,201,163,0.3); }
+
+/* ====== 底部 ====== */
+.footer { text-align: center; margin-top: 26px; }
+.back-btn {
+  position: fixed;
+  top: 18px;
+  left: 16px;
+  z-index: 100;
+  background: linear-gradient(135deg, #E8C9A3 0%, #F0D5C0 100%);
+  color: #4A3A28;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 22px;
+  font-size: 0.95rem;
+  font-family: var(--font-title);
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 4px 14px rgba(232, 201, 163, 0.4);
+}
+.back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(232,201,163,0.35); }
+.disclaimer {
+  margin-top: 16px;
+  font-size: 0.74rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+/* ====== 推荐弹窗 ====== */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,5,25,0.8);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-mask.show { opacity: 1; pointer-events: auto; }
+.modal-card {
+  width: 100%;
+  max-width: 420px;
+  max-height: 86vh;
+  overflow-y: auto;
+  background: linear-gradient(170deg, #241a45 0%, #1a1236 100%);
+  border: 1px solid rgba(232,201,163,0.4);
+  border-radius: 18px;
+  padding: 20px 18px;
+  transform: translateY(16px);
+  transition: transform 0.3s;
+}
+.modal-mask.show .modal-card { transform: translateY(0); }
+.modal-title {
+  font-family: var(--font-title);
+  color: var(--warm);
+  font-size: 1.15rem;
+  text-align: center;
+  margin-bottom: 4px;
+}
+.modal-sub { text-align: center; font-size: 0.82rem; color: var(--text-dim); margin-bottom: 14px; }
+.form-grid { display: grid; gap: 11px; }
+.form-item label { display: block; font-size: 0.82rem; color: var(--text-sub); margin-bottom: 5px; }
+.form-item label .req { color: #F2A6A6; margin-left: 2px; }
+.form-item input, .form-item select, .form-item textarea {
+  width: 100%;
+  background: #F5EFE6;
+  color: #4a4038;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  outline: none;
+}
+.form-item textarea { resize: vertical; min-height: 56px; }
+.modal-btns { display: flex; gap: 10px; margin-top: 6px; }
+.modal-btns button {
+  flex: 1;
+  border-radius: 999px;
+  padding: 10px 0;
+  font-size: 0.92rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(232,201,163,0.55);
+  color: var(--warm);
+}
+.btn-solid {
+  background: linear-gradient(135deg, var(--warm), var(--warm-deep));
+  border: none;
+  color: #3a2f24;
+  font-weight: 600;
+}
+.modal-thanks { text-align: center; padding: 26px 6px; }
+.modal-thanks .big { font-size: 2.4rem; margin-bottom: 12px; }
+.modal-thanks p { color: var(--text-sub); font-size: 0.92rem; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ====== 顶部 ====== -->
+  <div class="header">
+    <div class="header-title-row">
+      <img class="header-face" src="xz-face.webp" alt="小星" onerror="this.style.display='none'">
+      <div class="page-title">📍 身边的支持</div>
+      <span class="face-r"><img class="header-face" src="xz-face.webp" alt="小星" onerror="this.parentElement.style.display='none'"></span>
+    </div>
+    <div class="page-subtitle">找到你身边的支持与陪伴</div>
+  </div>
+
+  <!-- ====== 筛选区 ====== -->
+  <div class="filter-panel">
+    <div class="select-grid">
+      <div class="select-wrap">
+        <select id="provinceSel">
+          <option value="">选择省份</option>
+        </select>
+      </div>
+      <div class="select-wrap">
+        <select id="citySel" disabled>
+          <option value="">选择城市</option>
+        </select>
+      </div>
+    </div>
+    <div class="type-tags" id="typeTags">
+      <button class="type-tag active" data-type="全部">全部</button>
+      <button class="type-tag" data-type="公办学校">公办学校</button>
+      <button class="type-tag" data-type="家长互助">家长互助</button>
+      <button class="type-tag" data-type="公益组织">公益组织</button>
+      <button class="type-tag" data-type="大龄托养">大龄托养</button>
+    </div>
+  </div>
+
+  <!-- ====== 结果区 ====== -->
+  <div id="resultArea">
+    <div class="result-hint">请先选择省份和城市，小星带你看看身边的资源 ✨</div>
+  </div>
+
+  <!-- ====== 底部 ====== -->
+  <div class="footer">
+    <button class="back-btn" id="backHome">🏠 返回小星的家</button>
+    <div class="disclaimer">*本页面信息来源于公开渠道整理，仅供参考。建议联系前通过官方渠道核实最新信息。</div>
+  </div>
+
+</div>
+
+<!-- ====== 推荐资源弹窗 ====== -->
+<div class="modal-mask" id="recoModal">
+  <div class="modal-card">
+    <div id="recoFormWrap">
+      <div class="modal-title">💛 推荐身边的资源</div>
+      <div class="modal-sub">你推荐的每一条信息，都可能帮到一个家庭</div>
+      <form id="recoForm" class="form-grid">
+        <div class="form-item">
+          <label>机构名称<span class="req">*</span></label>
+          <input type="text" id="recoName" maxlength="60" placeholder="请输入机构全称" required>
+        </div>
+        <div class="form-item">
+          <label>机构类型<span class="req">*</span></label>
+          <select id="recoType" required>
+            <option value="">请选择类型</option>
+            <option>公办学校</option>
+            <option>家长互助</option>
+            <option>公益组织</option>
+            <option>大龄托养</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <label>地址</label>
+          <input type="text" id="recoAddr" maxlength="120" placeholder="省 / 市 / 详细地址（选填）">
+        </div>
+        <div class="form-item">
+          <label>联系方式</label>
+          <input type="text" id="recoContact" maxlength="80" placeholder="电话 / 公众号 / 官网（选填）">
+        </div>
+        <div class="form-item">
+          <label>推荐人姓名<span class="req">*</span></label>
+          <input type="text" id="recoFrom" maxlength="30" placeholder="怎么称呼你呀" required>
+        </div>
+        <div class="form-item">
+          <label>推荐人联系方式（可选）</label>
+          <input type="text" id="recoFromContact" maxlength="80" placeholder="方便我们向你反馈核实进展">
+        </div>
+        <div class="modal-btns">
+          <button type="button" class="btn-ghost" id="recoCancel">取消</button>
+          <button type="submit" class="btn-solid">提交推荐</button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-thanks" id="recoThanks" style="display:none;">
+      <div class="big">🌟</div>
+      <p>谢谢你！小星已经收到你推荐的资源啦。<br>我们会尽快核实并收录，<br>让更多家庭找到身边的温暖 💛</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   资源数据（来源于公开渠道整理）
+   type: 公办学校 | 家长互助 | 公益组织 | 大龄托养
+   national: true 表示全国性资源，任何城市都会展示
+============================================================ */
+var RESOURCES = [
+  /* ---- 公办自闭症学校 ---- */
+  { name: "青岛市晨星实验学校", type: "公办学校", province: "山东省", city: "青岛市",
+    desc: "我国北方首所公办自闭症教育专门学校，青岛市教育局直属，十五年一贯制",
+    address: "山东省青岛市市南区观象二路17号",
+    phone: "0532-80632519（种老师，周一至周五 9:00-17:00）",
+    img: "support_img/r01.jpg" },
+  { name: "保定市融星实验学校", type: "公办学校", province: "河北省", city: "保定市",
+    desc: "河北省首所自闭症儿童专门学校，十五年一贯制教育",
+    address: "河北省保定市乐凯南大街1395号",
+    phone: "0312-3015992",
+    img: "support_img/r02.jpg" },
+  { name: "鄂尔多斯市自闭症教育学校", type: "公办学校", province: "内蒙古自治区", city: "鄂尔多斯市",
+    desc: "十五年一贯制教育，涵盖学前、义务教育和高中",
+    address: "内蒙古自治区鄂尔多斯市东胜区铁西科技教育园区桃李街2号",
+    phone: "0477-8169734（教务处）",
+    img: "support_img/r03.jpg" },
+  { name: "北京市星启学校", type: "公办学校", province: "北京市", city: "北京市",
+    desc: "依托北京市盲人学校建设，承担全市自闭症儿童特殊教育基地功能",
+    address: "北京市海淀区",
+    phone: "010-88461146（北京市盲人学校）",
+    img: "support_img/r04.jpg" },
+  { name: "北京市星耀学校", type: "公办学校", province: "北京市", city: "北京市",
+    desc: "依托东城区特殊教育学校建设，覆盖学前、义务教育及职业教育",
+    address: "北京市东城区",
+    img: "support_img/r05.jpg" },
+  { name: "北京市星承学校", type: "公办学校", province: "北京市", city: "北京市",
+    desc: "依托西城区培智中心学校建设，探索十五年一贯制特殊教育体系",
+    address: "北京市西城区",
+    img: "support_img/r06.jpg" },
+  { name: "北京市星朗学校", type: "公办学校", province: "北京市", city: "北京市",
+    desc: "依托朝阳区安华学校建设，强化职业教育及生活技能培养",
+    address: "北京市朝阳区",
+    img: "support_img/r07.jpg" },
+  { name: "北京市星博学校", type: "公办学校", province: "北京市", city: "北京市",
+    desc: "依托北京市健翔学校建设，探索感知运动、自闭症教育研究等",
+    address: "北京市海淀区",
+    img: "support_img/r08.jpg" },
+  { name: "北京市星华学校", type: "公办学校", province: "北京市", city: "北京市",
+    desc: "依托通州区培智学校建设，面向自闭症及多重障碍学生",
+    address: "北京市通州区",
+    img: "support_img/r09.jpg" },
+  { name: "北京市星润学校", type: "公办学校", province: "北京市", city: "北京市",
+    desc: "依托昌平区特殊儿童教育学校建设，实行“一人一案”个别化教育",
+    address: "北京市昌平区",
+    img: "support_img/r10.jpg" },
+  { name: "广州市康纳学校", type: "公办学校", province: "广东省", city: "广州市",
+    desc: "全国首家公办自闭症专门学校（广州儿童孤独症康复研究中心），广州市残联直属，提供学前教育与义务教育",
+    address: "广东省广州市白云区惠德北路2号之一",
+    phone: "020-87476232｜官网：www.gzautism.cn",
+    img: "support_img/r22.jpg" },
+  { name: "福州市星语学校", type: "公办学校", province: "福建省", city: "福州市",
+    desc: "全国教育系统内第一所以自闭症儿童为招生对象的公办特殊教育学校，涵盖学前融合、义务教育与职业中专",
+    address: "福建省福州市仓山区首山路39号",
+    phone: "0591-88089675" },
+  { name: "深圳元平特殊教育学校", type: "公办学校", province: "广东省", city: "深圳市",
+    desc: "深圳市第一所公办特殊教育学校（1991年创办），面向孤独症等特殊学生开设义务教育与中职职业教育",
+    address: "广东省深圳市龙岗区布吉街道西环路138号",
+    phone: "0755-89468000｜招生咨询：0755-89468816｜官网：www.szyptx.net" },
+
+  /* ---- 家长互助组织 ---- */
+  { name: "温州市同星园家长互助协会", type: "家长互助", province: "浙江省", city: "温州市",
+    desc: "5A级社会组织，由孤独症家长发起，辐射1000多户家庭",
+    address: "浙江省温州市鹿城区",
+    more: "提供文体融合、家庭赋能、教育就业等支持。",
+    img: "support_img/r11.jpg" },
+  { name: "深圳市守望心智障碍者家庭关爱协会", type: "家长互助", province: "广东省", city: "深圳市",
+    desc: "心智障碍者家庭关爱组织，发起“家长加油站”项目",
+    address: "广东省深圳市",
+    phone: "0755-25652880｜官网：www.safpid.org",
+    img: "support_img/r12.jpg" },
+  { name: "北京融爱融乐心智障碍者家庭支持中心", type: "家长互助", province: "北京市", city: "北京市",
+    desc: "为心智障碍者家庭提供支持与倡导",
+    address: "北京市海淀区",
+    phone: "010-63962366｜官网：www.co-inclusion.org",
+    img: "support_img/r13.jpg" },
+  { name: "西安市满天星心智障碍者家长互助公益慈善中心", type: "家长互助", province: "陕西省", city: "西安市",
+    desc: "心智障碍者家长互助组织",
+    address: "陕西省西安市",
+    img: "support_img/r14.jpg" },
+  { name: "武汉市守望星自闭症家庭互助服务中心", type: "家长互助", province: "湖北省", city: "武汉市",
+    desc: "自闭症家庭互助服务中心",
+    address: "湖北省武汉市",
+    img: "support_img/r15.jpg" },
+  { name: "厦门市小蜗牛身心障碍者家庭支持中心", type: "家长互助", province: "福建省", city: "厦门市",
+    desc: "身心障碍者家庭支持组织",
+    address: "福建省厦门市",
+    img: "support_img/r16.jpg" },
+  { name: "中国精协孤独症工作委员会（孤工委）", type: "家长互助", province: "全国", city: "全国", national: true,
+    desc: "中国精协下设的孤独症专项工作委员会，发布世界孤独症日主题、推动行业规范，并在各地培育孤独症家长服务站",
+    address: "全国性行业组织（北京市西直门南小街186号）",
+    phone: "010-66580049｜邮箱：cappdr@163.com",
+    more: "可关注微信公众号《孤独症资讯》获取全国行业动态与各地家长服务站信息。" },
+  { name: "广州市扬爱特殊孩子家长俱乐部", type: "家长互助", province: "广东省", city: "广州市",
+    desc: "5A级社会组织，国内首家以特殊孩子家长为服务对象的社会服务机构（1997年创办），累计服务超2万户家庭",
+    address: "广东省广州市越秀区钱路头直街2号办公楼2楼",
+    phone: "020-83319795｜官网：www.gzyangai.com",
+    more: "服务涵盖融合教育支持、家长养育技能培训、支持性就业与“双老”家庭关怀。" },
+  { name: "兰州德爱心智障碍者社会服务中心", type: "家长互助", province: "甘肃省", city: "兰州市",
+    desc: "由心智障碍者家长发起的社会服务机构，为西北地区心智障碍者家庭提供同伴支持与信息服务",
+    address: "甘肃省兰州市城关区张掖路街道东丽大厦A座1104室" },
+  { name: "合肥市春芽残疾人互助协会", type: "家长互助", province: "安徽省", city: "合肥市",
+    desc: "由残疾人及家长组成的互助组织，为心智障碍者家庭提供互助交流与支持服务",
+    address: "安徽省合肥市瑶海区站西路宝文国际大厦2512室" },
+
+  /* ---- 公益基金会（全国性项目） ---- */
+  { name: "壹基金海洋天堂计划", type: "公益组织", province: "全国", city: "全国", national: true,
+    desc: "关注自闭症等特殊需要儿童，提供康复资助与倡导",
+    phone: "400-690-2700｜官网：www.onefoundation.cn",
+    more: "全国性项目，可在官网查询各地合作机构；微信服务号「壹基金壹家人」。",
+    img: "support_img/r17.jpg" },
+  { name: "中华儿慈会星星雨专项基金", type: "公益组织", province: "全国", city: "全国", national: true,
+    desc: "为自闭症儿童提供救助与康复支持",
+    phone: "010-88851687（中华儿慈会）｜官网：www.ccafc.org.cn",
+    more: "全国性项目，可在微信公众号搜索「中华儿慈会」了解。",
+    img: "support_img/r18.jpg" },
+  { name: "上海青聪泉儿童智能训练中心", type: "公益组织", province: "上海市", city: "上海市",
+    desc: "5A级非营利机构，为自闭症及发育障碍儿童提供康复训练，ECTA扩大性沟通技术特色机构",
+    address: "上海市长宁区哈密路168号",
+    phone: "021-62348556",
+    img: "support_img/r23.jpg" },
+  { name: "上海爱好儿童康复培训中心", type: "公益组织", province: "上海市", city: "上海市",
+    desc: "4A级社会组织，为自闭症儿童提供康复训练，并发起蓝丝带孤独症关爱行动",
+    address: "上海市闵行区漕宝路1467弄静安新城10区17号",
+    phone: "021-54789059",
+    img: "support_img/r24.jpg" },
+  { name: "郑州市康达能力训练中心", type: "公益组织", province: "河南省", city: "郑州市",
+    desc: "中残联孤独症定点康复机构、5A级社会组织，河南省规模最大的自闭症综合性康复机构之一",
+    address: "河南省郑州市金水区北三环中方园西区50号楼",
+    phone: "0371-65366916｜官网：www.kdnlxl.com",
+    img: "support_img/r25.jpg" },
+  { name: "南京明心儿童益智教育培训中心", type: "公益组织", province: "江苏省", city: "南京市",
+    desc: "南京残联定点孤独症康复机构、医保定点单位，专注自闭症儿童康复训练与家庭指导",
+    address: "江苏省南京市玄武区玄武大道91号樱铁村17号",
+    phone: "025-85461482",
+    img: "support_img/r26.jpg" },
+  { name: "乌鲁木齐爱心园孤独症康复中心", type: "公益组织", province: "新疆维吾尔自治区", city: "乌鲁木齐市",
+    desc: "由自闭症家长创办的非营利康复机构，新疆残联定点康复机构，服务全疆孤独症家庭",
+    address: "新疆乌鲁木齐市经开区（头屯河区）喀什西路北七巷3号2楼",
+    phone: "0991-4328961",
+    img: "support_img/r27.jpg" },
+  { name: "黑龙江省孤独症儿童康复协会", type: "公益组织", province: "黑龙江省", city: "哈尔滨市",
+    desc: "省民政厅批准、省卫健委业务主管的社会团体，依托哈尔滨医科大学开展康复、评估与家长培训",
+    address: "黑龙江省哈尔滨市南岗区保健路157号（哈尔滨医科大学公共卫生学院二楼B区）",
+    phone: "0451-87502867｜官网：hljautism.cn",
+    img: "support_img/r28.jpg" },
+  { name: "银川星语家园儿童孤独症康复训练中心", type: "公益组织", province: "宁夏回族自治区", city: "银川市",
+    desc: "由自闭症儿童母亲创办的民办非营利机构，宁夏残联定点康复机构，提供ABA个别化训练",
+    address: "宁夏银川市兴庆区海宝东路博雅家园一区兴庆九幼三楼",
+    phone: "13995104686",
+    img: "support_img/r29.jpg" },
+  { name: "海南大健康儿童康复医疗中心", type: "公益组织", province: "海南省", city: "海口市",
+    desc: "海南省残联定点、医保定点机构，面向0-17岁自闭症及智力障碍儿童开展康复训练",
+    address: "海南省海口市龙华区金宇东路16号健成商厦三、四层",
+    phone: "15501882211",
+    img: "support_img/r30.jpg" },
+  { name: "太原安健儿公益服务中心", type: "公益组织", province: "山西省", city: "太原市",
+    desc: "慧灵网络伙伴机构，为心智障碍者及家庭提供社区化服务与支持",
+    address: "山西省太原市迎泽区东安路儒学大厦A区三楼",
+    phone: "17735199369",
+    img: "support_img/r31.jpg" },
+  { name: "北京星星雨教育研究所", type: "公益组织", province: "北京市", city: "北京市",
+    desc: "1993年创办，中国第一个提供ABA服务的专业机构，提供儿童训练、家长培训与大龄支援",
+    address: "北京市朝阳区双桥东路甲8号（管庄校区）",
+    phone: "400-1199-509｜官网：www.guduzh.org.cn",
+    more: "设有13岁以上孤独症人士日间照料、就业支援与特需信托项目。" },
+  { name: "青岛市以琳康教展能中心", type: "公益组织", province: "山东省", city: "青岛市",
+    desc: "2000年创办的非营利机构，全国规模最大的自闭症儿童康复训练机构之一，采用PEP-3评估与一对一个训",
+    address: "山东省青岛市城阳区华安路8号",
+    phone: "0532-88781620｜官网：www.elimautism.com" },
+  { name: "西安市碑林区拉拉手特殊教育中心", type: "公益组织", province: "陕西省", city: "西安市",
+    desc: "西安知名特殊教育机构，为自闭症等心智障碍儿童提供教育训练与家长支持",
+    address: "陕西省西安市碑林区金花北路甲字9号太和公园人家4层" },
+  { name: "武汉市江岸区爱特特殊儿童教育培训中心", type: "公益组织", province: "湖北省", city: "武汉市",
+    desc: "为自闭症等特殊儿童提供教育培训与康复支持",
+    address: "湖北省武汉市江岸区高雄路8号" },
+  { name: "长沙市雨花区爱萌特殊儿童康复中心", type: "公益组织", province: "湖南省", city: "长沙市",
+    desc: "为自闭症等特殊儿童提供康复训练服务",
+    address: "湖南省长沙市雨花区叠彩兰亭B3栋二楼" },
+  { name: "徐州市禾润儿童康复幼教中心", type: "公益组织", province: "江苏省", city: "徐州市",
+    desc: "为自闭症等特殊儿童提供康复训练与幼教服务",
+    address: "江苏省徐州市泉山区南三环路256号（徐州市社会福利院内）" },
+  { name: "唐山市路北区思达儿童智慧潜能教育培训学校", type: "公益组织", province: "河北省", city: "唐山市",
+    desc: "为自闭症等特殊儿童提供康复训练与潜能开发",
+    address: "河北省唐山市体育馆道7号" },
+  { name: "赣州市章贡区慧聪儿童康复训练中心", type: "公益组织", province: "江西省", city: "赣州市",
+    desc: "中国精协自强自律创建活动达标机构，为自闭症儿童提供康复训练",
+    address: "江西省赣州市章贡区东桥路13号" },
+
+  /* ---- 大龄托养机构 ---- */
+  { name: "慧灵家合", type: "大龄托养", province: "北京市", city: "北京市",
+    desc: "为大龄心智障碍者提供社区家庭式托养服务，365天*24小时照护",
+    address: "北京市大兴区西红门",
+    phone: "010-65254398（北京慧灵）｜官网：www.hlcn.org",
+    img: "support_img/r19.jpg" },
+  { name: "天津向日葵自闭症康复中心", type: "大龄托养", province: "天津市", city: "天津市",
+    desc: "为16岁以上青壮年残障人士提供生活照料、护理、社会能力辅导",
+    address: "天津市滨海新区大港区",
+    img: "support_img/r20.jpg" },
+  { name: "星知光大龄校区", type: "大龄托养", province: "河北省", city: "唐山市",
+    desc: "为大龄心智障碍者提供日间照料及全托养服务",
+    address: "河北省唐山市路北区",
+    phone: "131-8499-7970（大龄校区服务热线）",
+    img: "support_img/r21.jpg" },
+  { name: "广州慧灵", type: "大龄托养", province: "广东省", city: "广州市",
+    desc: "全国慧灵网络成员，为心智障碍者提供社区家庭式托养、日间活动与就业支持",
+    address: "广东省广州市越秀区麓景东路43号沙河登峰综合市场2楼203",
+    phone: "020-83572736｜官网：www.hlcn.org",
+    img: "support_img/r32.jpg" },
+  { name: "上海慧灵", type: "大龄托养", province: "上海市", city: "上海市",
+    desc: "全国慧灵网络成员，为大龄心智障碍者提供社区化居住与日间照料服务",
+    address: "上海市闵行区都园路3896弄6号（颛星天地）",
+    phone: "13816389173",
+    img: "support_img/r33.jpg" },
+  { name: "天津慧灵", type: "大龄托养", province: "天津市", city: "天津市",
+    desc: "全国慧灵网络成员，为心智障碍者提供社区家庭服务与托养支持",
+    address: "天津市南开区鼓楼街龙亭家园7号楼201",
+    phone: "022-58650207",
+    img: "support_img/r34.jpg" },
+  { name: "重庆慧灵", type: "大龄托养", province: "重庆市", city: "重庆市",
+    desc: "全国慧灵网络成员，为大龄心智障碍者提供社区家庭式服务",
+    address: "重庆市渝中区人和街创意大厦2206",
+    phone: "023-63875467",
+    img: "support_img/r35.jpg" },
+  { name: "长沙慧灵", type: "大龄托养", province: "湖南省", city: "长沙市",
+    desc: "全国慧灵网络成员，为心智障碍者提供日间照料、社区居住与艺术调理",
+    address: "湖南省长沙市天心区书院路777号冶金大厦裙楼3楼",
+    phone: "0731-82254427",
+    img: "support_img/r36.jpg" },
+  { name: "兰州慧灵", type: "大龄托养", province: "甘肃省", city: "兰州市",
+    desc: "全国慧灵网络成员，为甘肃地区心智障碍者提供社区化服务",
+    address: "甘肃省兰州市七里河区阳光家园紫荆苑19号楼A101",
+    phone: "0931-4536424",
+    img: "support_img/r37.jpg" },
+  { name: "杭州慧灵", type: "大龄托养", province: "浙江省", city: "杭州市",
+    desc: "全国慧灵网络成员，为大龄心智障碍者提供托养、日间活动与就业支持",
+    address: "浙江省杭州市上城区丁兰街道长虹路36号",
+    phone: "0571-85143072",
+    img: "support_img/r38.jpg" },
+  { name: "大连慧灵", type: "大龄托养", province: "辽宁省", city: "大连市",
+    desc: "全国慧灵网络成员，为大连地区心智障碍者提供社区家庭服务",
+    address: "辽宁省大连市开发区东北四街140号",
+    phone: "13478684032",
+    img: "support_img/r39.jpg" },
+  { name: "昆明慧灵", type: "大龄托养", province: "云南省", city: "昆明市",
+    desc: "全国慧灵网络成员，为云南地区心智障碍者提供社区化托养服务",
+    address: "云南省昆明市西山区环城南路汕头大厦B座1701",
+    phone: "15908850943",
+    img: "support_img/r40.jpg" },
+  { name: "桂林慧灵", type: "大龄托养", province: "广西壮族自治区", city: "桂林市",
+    desc: "全国慧灵网络成员，为广西地区心智障碍者提供社区家庭与日间服务",
+    address: "广西桂林市七星区六合路125号科技苑1-2层5号房",
+    phone: "0773-8288892",
+    img: "support_img/r41.jpg" },
+  { name: "安庆慧灵", type: "大龄托养", province: "安徽省", city: "安庆市",
+    desc: "全国慧灵网络成员，为安庆地区心智障碍者提供托养与社区支持",
+    address: "安徽省安庆市皖江大道绿地迎江世纪城一期B区4栋3号",
+    phone: "0556-5215660",
+    img: "support_img/r42.jpg" },
+  { name: "合肥慧灵", type: "大龄托养", province: "安徽省", city: "合肥市",
+    desc: "全国慧灵网络成员，为合肥地区心智障碍者提供社区化服务",
+    address: "安徽省合肥市庐阳区四里河路与北二环交口明发商业广场C2区F113",
+    phone: "18855170725",
+    img: "support_img/r43.jpg" },
+  { name: "贵阳慧灵", type: "大龄托养", province: "贵州省", city: "贵阳市",
+    desc: "全国慧灵网络成员，为贵州地区心智障碍者提供社区家庭服务",
+    address: "贵州省贵阳市南明区黔江路5号楼底商二层",
+    phone: "0851-85768835",
+    img: "support_img/r44.jpg" },
+  { name: "西宁慧灵", type: "大龄托养", province: "青海省", city: "西宁市",
+    desc: "全国慧灵网络成员，设于西宁市残疾人综合服务中心，提供心智障碍者社区服务",
+    address: "青海省西宁市城北区朝阳西路59号残疾人综合服务中心",
+    phone: "0971-5506453",
+    img: "support_img/r45.jpg" },
+  { name: "长春与光同行", type: "大龄托养", province: "吉林省", city: "长春市",
+    desc: "慧灵网络伙伴机构，为心智障碍者提供康复训练与大龄托养服务",
+    address: "吉林省长春市宽城区北环城路100号华亨名城14号楼",
+    phone: "0431-81101746",
+    img: "support_img/r46.jpg" },
+  { name: "新余慧灵", type: "大龄托养", province: "江西省", city: "新余市",
+    desc: "全国慧灵网络成员，为新余地区心智障碍者提供社区化服务",
+    address: "江西省新余市铁路二村五栋一层",
+    phone: "13320009767",
+    img: "support_img/r47.jpg" },
+  { name: "上海湛蓝公益（佘山镇湛蓝残疾人服务中心）", type: "大龄托养", province: "上海市", city: "上海市",
+    desc: "3A级社会组织，为大龄自闭症等心智障碍者提供就业实训、手工制作与社会实践平台",
+    address: "上海市松江区佘山镇天马东街23号（区残疾人联合服务中心内）",
+    phone: "021-62243788",
+    img: "support_img/r48.jpg" },
+  { name: "北京市丰台区利智康复中心", type: "大龄托养", province: "北京市", city: "北京市",
+    desc: "2000年创办，主要为15岁以上心智障碍者提供日间活动、托养、职业康复与支持性就业服务",
+    address: "北京市丰台区丰西北里93号",
+    phone: "010-51856801｜官网：www.bjlizhi.org" },
+  { name: "中国慧灵心智障碍者社区服务网络", type: "大龄托养", province: "全国", city: "全国", national: true,
+    desc: "国内较早为心智障碍者提供社区家庭式服务的公益网络，成员机构遍布北京、上海、广州、重庆、兰州等地",
+    address: "全国性网络（各地设有成员机构）",
+    phone: "官网：www.hlcn.org",
+    more: "可在官网查询各城市慧灵成员机构的联系方式与服务内容。" }
+];
+
+/* 省份 - 城市列表（含主要城市，供选择参考） */
+var CITY_MAP = {
+  "北京市": ["北京市"],
+  "上海市": ["上海市"],
+  "天津市": ["天津市"],
+  "重庆市": ["重庆市"],
+  "河北省": ["石家庄市", "保定市", "唐山市", "秦皇岛市", "邯郸市", "邢台市", "张家口市", "承德市", "廊坊市", "沧州市", "衡水市"],
+  "山西省": ["太原市", "大同市", "长治市", "晋中市", "临汾市", "运城市", "吕梁市", "忻州市", "朔州市", "阳泉市", "晋城市"],
+  "辽宁省": ["沈阳市", "大连市", "鞍山市", "抚顺市", "本溪市", "丹东市", "锦州市", "营口市", "阜新市", "辽阳市", "盘锦市", "铁岭市", "朝阳市", "葫芦岛市"],
+  "吉林省": ["长春市", "吉林市", "四平市", "辽源市", "通化市", "白山市", "松原市", "白城市", "延边朝鲜族自治州"],
+  "黑龙江省": ["哈尔滨市", "齐齐哈尔市", "牡丹江市", "佳木斯市", "大庆市", "鸡西市", "双鸭山市", "伊春市", "七台河市", "鹤岗市", "绥化市", "黑河市"],
+  "江苏省": ["南京市", "苏州市", "无锡市", "常州市", "南通市", "徐州市", "扬州市", "盐城市", "泰州市", "镇江市", "淮安市", "宿迁市", "连云港市"],
+  "浙江省": ["杭州市", "宁波市", "温州市", "嘉兴市", "湖州市", "绍兴市", "金华市", "衢州市", "舟山市", "台州市", "丽水市"],
+  "安徽省": ["合肥市", "芜湖市", "蚌埠市", "淮南市", "马鞍山市", "淮北市", "铜陵市", "安庆市", "黄山市", "滁州市", "阜阳市", "宿州市", "六安市", "亳州市", "池州市", "宣城市"],
+  "福建省": ["福州市", "厦门市", "泉州市", "漳州市", "莆田市", "三明市", "南平市", "龙岩市", "宁德市"],
+  "江西省": ["南昌市", "景德镇市", "萍乡市", "九江市", "新余市", "鹰潭市", "赣州市", "吉安市", "宜春市", "抚州市", "上饶市"],
+  "山东省": ["济南市", "青岛市", "淄博市", "枣庄市", "东营市", "烟台市", "潍坊市", "济宁市", "泰安市", "威海市", "日照市", "临沂市", "德州市", "聊城市", "滨州市", "菏泽市"],
+  "河南省": ["郑州市", "开封市", "洛阳市", "平顶山市", "安阳市", "鹤壁市", "新乡市", "焦作市", "濮阳市", "许昌市", "漯河市", "三门峡市", "南阳市", "商丘市", "信阳市", "周口市", "驻马店市"],
+  "湖北省": ["武汉市", "黄石市", "十堰市", "宜昌市", "襄阳市", "鄂州市", "荆门市", "孝感市", "荆州市", "黄冈市", "咸宁市", "随州市", "恩施土家族苗族自治州"],
+  "湖南省": ["长沙市", "株洲市", "湘潭市", "衡阳市", "邵阳市", "岳阳市", "常德市", "张家界市", "益阳市", "郴州市", "永州市", "怀化市", "娄底市", "湘西土家族苗族自治州"],
+  "广东省": ["广州市", "深圳市", "珠海市", "汕头市", "佛山市", "韶关市", "湛江市", "肇庆市", "江门市", "茂名市", "惠州市", "梅州市", "汕尾市", "河源市", "阳江市", "清远市", "东莞市", "中山市", "潮州市", "揭阳市", "云浮市"],
+  "海南省": ["海口市", "三亚市", "三沙市", "儋州市"],
+  "四川省": ["成都市", "自贡市", "攀枝花市", "泸州市", "德阳市", "绵阳市", "广元市", "遂宁市", "内江市", "乐山市", "南充市", "眉山市", "宜宾市", "广安市", "达州市", "雅安市", "巴中市", "资阳市"],
+  "贵州省": ["贵阳市", "六盘水市", "遵义市", "安顺市", "毕节市", "铜仁市"],
+  "云南省": ["昆明市", "曲靖市", "玉溪市", "保山市", "昭通市", "丽江市", "普洱市", "临沧市", "大理白族自治州", "红河哈尼族彝族自治州", "西双版纳傣族自治州"],
+  "陕西省": ["西安市", "铜川市", "宝鸡市", "咸阳市", "渭南市", "延安市", "汉中市", "榆林市", "安康市", "商洛市"],
+  "甘肃省": ["兰州市", "嘉峪关市", "金昌市", "白银市", "天水市", "武威市", "张掖市", "平凉市", "酒泉市", "庆阳市", "定西市", "陇南市", "临夏回族自治州", "甘南藏族自治州"],
+  "青海省": ["西宁市", "海东市", "海西蒙古族藏族自治州", "海南藏族自治州", "海北藏族自治州", "黄南藏族自治州", "果洛藏族自治州", "玉树藏族自治州"],
+  "内蒙古自治区": ["呼和浩特市", "包头市", "乌海市", "赤峰市", "通辽市", "鄂尔多斯市", "呼伦贝尔市", "巴彦淖尔市", "乌兰察布市", "兴安盟", "锡林郭勒盟", "阿拉善盟"],
+  "广西壮族自治区": ["南宁市", "柳州市", "桂林市", "梧州市", "北海市", "防城港市", "钦州市", "贵港市", "玉林市", "百色市", "贺州市", "河池市", "来宾市", "崇左市"],
+  "宁夏回族自治区": ["银川市", "石嘴山市", "吴忠市", "固原市", "中卫市"],
+  "新疆维吾尔自治区": ["乌鲁木齐市", "克拉玛依市", "吐鲁番市", "哈密市", "昌吉回族自治州", "博尔塔拉蒙古自治州", "巴音郭楞蒙古自治州", "阿克苏地区", "喀什地区", "伊犁哈萨克自治州", "塔城地区", "阿勒泰地区"],
+  "西藏自治区": ["拉萨市", "日喀则市", "昌都市", "林芝市", "山南市", "那曲市", "阿里地区"]
+};
+
+var PROVINCES = Object.keys(CITY_MAP);
+var TYPE_ORDER = ["公办学校", "家长互助", "公益组织", "大龄托养"];
+var TYPE_ICONS = { "公办学校": "🏫", "家长互助": "🤝", "公益组织": "💛", "大龄托养": "🏡" };
+var NO_CONTACT = "暂无公开联系方式，建议通过属地教育局或官方渠道咨询";
+
+var provinceSel = document.getElementById("provinceSel");
+var citySel = document.getElementById("citySel");
+var resultArea = document.getElementById("resultArea");
+var typeTags = document.getElementById("typeTags");
+var recoModal = document.getElementById("recoModal");
+
+var curType = "全部";
+
+/* ====== 初始化省份下拉 ====== */
+PROVINCES.forEach(function(p) {
+  var opt = document.createElement("option");
+  opt.value = p; opt.textContent = p;
+  provinceSel.appendChild(opt);
+});
+
+/* ====== 省份 → 城市联动 ====== */
+provinceSel.addEventListener("change", function() {
+  citySel.innerHTML = '<option value="">选择城市</option>';
+  var p = provinceSel.value;
+  if (!p) {
+    citySel.disabled = true;
+    renderHint("请先选择省份和城市，小星带你看看身边的资源 ✨");
+    return;
+  }
+  CITY_MAP[p].forEach(function(c) {
+    var opt = document.createElement("option");
+    opt.value = c; opt.textContent = c;
+    citySel.appendChild(opt);
+  });
+  citySel.disabled = false;
+  renderHint("再选一个城市，看看那里有什么资源吧 🏙️");
+});
+
+/* ====== 类型标签 ====== */
+typeTags.addEventListener("click", function(e) {
+  var btn = e.target.closest(".type-tag");
+  if (!btn) return;
+  typeTags.querySelectorAll(".type-tag").forEach(function(t) { t.classList.remove("active"); });
+  btn.classList.add("active");
+  curType = btn.getAttribute("data-type");
+  renderList();
+});
+
+/* ====== 城市选择 → 渲染列表 ====== */
+citySel.addEventListener("change", renderList);
+
+function renderHint(text) {
+  resultArea.innerHTML = '<div class="result-hint">' + text + "</div>";
+}
+
+function renderList() {
+  var p = provinceSel.value, c = citySel.value;
+  if (!p || !c) { renderHint("请先选择省份和城市，小星带你看看身边的资源 ✨"); return; }
+
+  var local = RESOURCES.filter(function(r) { return r.province === p && r.city === c; });
+  var national = RESOURCES.filter(function(r) { return r.national; });
+
+  /* 城市无本地收录资源 → 空状态提示 + 推荐入口，全国性资源列在下方供参考 */
+  if (!local.length) { renderEmpty(p, c, national); return; }
+
+  var list = local.concat(national);
+  if (curType !== "全部") {
+    list = list.filter(function(r) { return r.type === curType; });
+    if (!list.length) { renderEmpty(p, c, []); return; }
+  }
+
+  var html = "";
+  TYPE_ORDER.forEach(function(t) {
+    var group = list.filter(function(r) { return r.type === t; });
+    if (!group.length) return;
+    html += '<div class="group-title">' + TYPE_ICONS[t] + " " + t + "</div>";
+    group.forEach(function(r) { html += cardHTML(r); });
+  });
+  resultArea.innerHTML = html;
+  bindCards();
+}
+
+function cardHTML(r) {
+  var contact = r.phone || NO_CONTACT;
+  var badge = r.national ? '<span class="res-badge">全国</span>' : "";
+  var moreRows =
+    '<div class="more-row"><span class="k">类型：</span><span class="v">' + r.type + "</span></div>" +
+    '<div class="more-row"><span class="k">地址：</span><span class="v">' + (r.address || (r.national ? "全国性项目" : "暂无")) + "</span></div>" +
+    '<div class="more-row"><span class="k">联系：</span><span class="v">' + contact + "</span></div>" +
+    (r.more ? '<div class="more-note">💡 ' + r.more + "</div>" : "");
+  return (
+    '<div class="res-card" data-name="' + r.name + '">' +
+      '<div class="res-top">' +
+        '<div class="res-name">' + r.name + badge + "</div>" +
+        '<span class="res-tag tag-' + r.type + '">' + r.type + "</span>" +
+      "</div>" +
+      '<div class="res-desc">' + r.desc + "</div>" +
+      '<div class="res-meta">' +
+        '<div class="res-meta-row"><span class="ico">📍</span><span>' + (r.address || (r.national ? "全国性项目" : "暂无")) + "</span></div>" +
+        '<div class="res-meta-row"><span class="ico">📞</span><span>' + contact + "</span></div>" +
+      "</div>" +
+      '<button class="more-btn">了解更多 ▾</button>' +
+      '<div class="res-more"><div class="more-inner"><div class="res-img-box"></div>' + moreRows + "</div></div>" +
+    "</div>"
+  );
+}
+
+/* 首次展开时加载地点示意图（本地图片，加载完成后再撑开高度） */
+function loadImage(r, card, more) {
+  var box = card.querySelector(".res-img-box");
+  if (!box || box.dataset.done) return;
+  box.dataset.done = "1";
+  if (!r.img) { box.remove(); return; }
+  box.classList.add("loading");
+  box.textContent = "📍 图片加载中…";
+  var im = new Image();
+  im.className = "res-img";
+  im.alt = r.name + " 位置示意图";
+  im.onload = function() {
+    box.classList.remove("loading");
+    box.textContent = "";
+    box.appendChild(im);
+    var cap = document.createElement("div");
+    cap.className = "res-img-cap";
+    cap.textContent = "📍 位置示意图（底图：高德地图），仅供参考";
+    box.appendChild(cap);
+    if (card.classList.contains("open")) {
+      more.style.maxHeight = more.scrollHeight + "px";
+    }
+  };
+  im.onerror = function() {
+    box.classList.remove("loading");
+    box.textContent = "图片暂时加载不出来，请稍后再试";
+  };
+  im.src = r.img;
+}
+
+function bindCards() {
+  resultArea.querySelectorAll(".res-card").forEach(function(card) {
+    var btn = card.querySelector(".more-btn");
+    var more = card.querySelector(".res-more");
+    var r = null;
+    RESOURCES.forEach(function(x) { if (x.name === card.getAttribute("data-name")) r = x; });
+    btn.addEventListener("click", function() {
+      var opening = !card.classList.contains("open");
+      if (opening) {
+        if (r) loadImage(r, card, more);
+        more.style.maxHeight = more.scrollHeight + "px";
+        card.classList.add("open");
+        btn.textContent = "收起 ▴";
+      } else {
+        more.style.maxHeight = "0";
+        card.classList.remove("open");
+        btn.textContent = "了解更多 ▾";
+      }
+    });
+  });
+}
+
+/* ====== 空状态 + 推荐表单 ====== */
+function renderEmpty(p, c, national) {
+  var filtered = national || [];
+  if (curType !== "全部") {
+    filtered = filtered.filter(function(r) { return r.type === curType; });
+  }
+  var html =
+    '<div class="empty-box">' +
+      '<div class="empty-emoji">🌌</div>' +
+      '<div class="empty-title">' + c + " 暂无收录的资源</div>" +
+      '<ul class="empty-tips">' +
+        "<li>选择附近的城市看看</li>" +
+        "<li>点击下方按钮，推荐你身边的资源</li>" +
+      "</ul><br>" +
+      '<button class="reco-btn" id="openReco">✨ 推荐你身边的资源</button>' +
+    "</div>";
+  if (filtered.length) {
+    html += '<div class="group-title">🌐 全国性资源（各地均可参考）</div>';
+    filtered.forEach(function(r) { html += cardHTML(r); });
+  }
+  resultArea.innerHTML = html;
+  bindCards();
+  document.getElementById("openReco").addEventListener("click", function() {
+    recoModal.classList.add("show");
+  });
+}
+
+document.getElementById("recoCancel").addEventListener("click", function() {
+  recoModal.classList.remove("show");
+  setTimeout(function() {
+    document.getElementById("recoFormWrap").style.display = "";
+    document.getElementById("recoThanks").style.display = "none";
+    document.getElementById("recoForm").reset();
+  }, 320);
+});
+recoModal.addEventListener("click", function(e) {
+  if (e.target === recoModal) document.getElementById("recoCancel").click();
+});
+
+document.getElementById("recoForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  var rec = {
+    name: document.getElementById("recoName").value.trim(),
+    type: document.getElementById("recoType").value,
+    address: document.getElementById("recoAddr").value.trim(),
+    contact: document.getElementById("recoContact").value.trim(),
+    from: document.getElementById("recoFrom").value.trim(),
+    fromContact: document.getElementById("recoFromContact").value.trim(),
+    province: provinceSel.value, city: citySel.value,
+    time: new Date().toISOString()
+  };
+  try {
+    var arr = JSON.parse(localStorage.getItem("support-suggestions") || "[]");
+    arr.push(rec);
+    localStorage.setItem("support-suggestions", JSON.stringify(arr));
+  } catch (err) {}
+  document.getElementById("recoFormWrap").style.display = "none";
+  document.getElementById("recoThanks").style.display = "";
+});
+
+/* ====== 页面淡入 + 返回小星的家（淡出后跳 Hub） ====== */
+(function() {
+  var st = document.createElement("style");
+  st.textContent = "@keyframes pageFadeIn{from{opacity:0}to{opacity:1}}html,body{animation:pageFadeIn .5s ease both}";
+  document.head.appendChild(st);
+  function goHome() {
+    document.body.style.animation = "none";
+    document.body.style.transition = "opacity .45s ease";
+    document.body.style.opacity = "0";
+    setTimeout(function() { window.location.href = "index.html#hub"; }, 450);
+  }
+  document.getElementById("backHome").addEventListener("click", goHome);
+})();
+</script>
+</body>
+</html>

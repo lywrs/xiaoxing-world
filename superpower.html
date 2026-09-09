@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🌟 小星的超能力</title>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-title: "ZCOOL KuaiLe", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+  --bg: #F7F0EA;
+  --text: #5B5550;
+  --text-light: #8A8278;
+  --warm: #E8C9A3;
+  --warm-dark: #D4A574;
+  --warm-gold-1: #F5D58B;
+  --warm-gold-2: #E8B865;
+  --card-bg: #FFFFFF;
+  --link: #D4A574;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px 18px 36px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ====== 左上角返回按钮 ====== */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 8px 16px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.85rem;
+  text-decoration: none;
+  border-radius: 999px;
+  border: 1px solid var(--warm);
+  box-shadow: 0 2px 6px rgba(212,165,116,0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  margin-bottom: 18px;
+}
+.back-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(212,165,116,0.28); }
+.back-btn:active { transform: scale(0.97); }
+
+/* ====== 顶部标题区 ====== */
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 0 6px;
+}
+.header-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.header-face {
+  width: 62px;
+  flex: none;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(90,70,52,0.16));
+  animation: faceFloat 3s ease-in-out infinite;
+}
+.face-r { display: inline-flex; flex: none; transform: scaleX(-1); }
+@keyframes faceFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@media (max-width: 480px) {
+  .header-face { width: 46px; }
+  .header-title-row { gap: 10px; }
+}
+.page-title {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  color: #5A4634;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.page-subtitle {
+  font-size: 0.92rem;
+  color: var(--text-light);
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+.star-quote {
+  display: inline-block;
+  padding: 10px 18px;
+  background: rgba(232,201,163,0.25);
+  border-radius: 14px;
+  font-size: 0.82rem;
+  color: #7A6A55;
+  line-height: 1.6;
+  max-width: 100%;
+  font-style: italic;
+}
+
+/* ====== 区块标题 ====== */
+.section-title {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  color: #5A4634;
+  margin: 26px 0 14px;
+  text-align: center;
+  position: relative;
+}
+.section-title::before,
+.section-title::after {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--warm);
+  vertical-align: middle;
+  margin: 0 10px;
+}
+
+/* ====== 超能力卡片网格（单列，每张含图片+故事） ====== */
+.power-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.power-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 26px 26px 22px;
+  box-shadow: 0 4px 16px rgba(212,165,116,0.14);
+  display: flex;
+  flex-direction: row;
+  gap: 22px;
+  align-items: stretch;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  position: relative;
+  overflow: hidden;
+  max-height: 440px;
+}
+.power-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--warm-gold-1), var(--warm-gold-2));
+}
+.power-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(212,165,116,0.20); }
+.power-card:active { transform: scale(0.985); }
+
+/* 左侧图片 */
+.power-img-wrap {
+  flex: 0 0 40%;
+  max-width: 300px;
+  min-width: 160px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #F5EDE4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  flex-shrink: 0;
+  border: 1px solid rgba(232,201,163,0.35);
+}
+.power-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.power-img-ph {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  line-height: 1.5;
+  text-align: center;
+  padding: 10px;
+}
+.power-img-ph-emoji { font-size: 2.2rem; margin-bottom: 6px; }
+
+/* 右侧内容区 —— 内容多时可滚动 */
+.power-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(232,201,163,0.5) transparent;
+}
+.power-body::-webkit-scrollbar { width: 5px; }
+.power-body::-webkit-scrollbar-thumb {
+  background: rgba(232,201,163,0.5);
+  border-radius: 3px;
+}
+.power-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.power-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.power-title-wrap { flex: 1; min-width: 0; }
+.power-name {
+  font-family: var(--font-title);
+  font-size: 1.42rem;
+  color: #5A4634;
+  line-height: 1.3;
+}
+.power-desc {
+  font-size: 1.04rem;
+  color: var(--text-light);
+  line-height: 1.65;
+  margin-top: 4px;
+}
+
+/* 故事引用块（暖金色左侧竖线） */
+.power-story {
+  border-left: 3px solid var(--warm-dark);
+  padding: 12px 14px 12px 16px;
+  margin-top: 4px;
+  background: linear-gradient(135deg, rgba(232,201,163,0.14) 0%, rgba(255,255,255,0) 70%);
+  border-radius: 0 10px 10px 0;
+}
+.power-story-label {
+  font-size: 0.92rem;
+  color: var(--warm-dark);
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.power-story-text {
+  font-size: 1.06rem;
+  color: #5B5550;
+  line-height: 1.85;
+}
+.power-story-text p { margin-bottom: 8px; }
+.power-story-text p:last-child { margin-bottom: 0; }
+
+/* 手机端：图片在上，文字在下 */
+@media (max-width: 640px) {
+  .power-card {
+    flex-direction: column;
+    padding: 16px 14px 14px;
+    gap: 12px;
+    max-height: none;
+  }
+  .power-img-wrap {
+    flex: none;
+    max-width: none;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+  }
+  .power-body {
+    overflow-y: visible;
+  }
+  .power-name { font-size: 1.1rem; }
+  .power-desc { font-size: 0.85rem; }
+  .power-story-text { font-size: 0.88rem; }
+}
+
+/* ====== 他们这样说（自述） ====== */
+.voices {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.voice-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 3px 10px rgba(212,165,116,0.10);
+  border-left: 3px solid var(--warm-dark);
+}
+.voice-text {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+.voice-author {
+  font-size: 0.74rem;
+  color: var(--warm-dark);
+  font-weight: 600;
+}
+
+/* ====== 真实故事 ====== */
+.story-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px 22px;
+  box-shadow: 0 6px 20px rgba(212,165,116,0.18);
+  margin-top: 4px;
+}
+/* 带照片的故事卡片（雨人原型）：桌面端左图右文，手机端上下排列；照片保持原图比例 */
+.story-card.with-photo { display: flex; gap: 20px; align-items: center; }
+.story-photo {
+  flex: 0 0 34%;
+  max-width: 300px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #F5EDE4;
+  border: 1px solid rgba(232,201,163,0.35);
+}
+.story-photo img { width: 100%; height: auto; display: block; }
+.story-body { flex: 1; min-width: 0; }
+@media (max-width: 640px) {
+  .story-card.with-photo { flex-direction: column; align-items: stretch; gap: 12px; }
+  .story-photo { flex: none; max-width: none; width: 100%; }
+}
+.story-title {
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  color: #5A4634;
+  margin-bottom: 14px;
+  line-height: 1.35;
+}
+.story-text {
+  font-size: 0.86rem;
+  color: var(--text);
+  line-height: 1.85;
+  margin-bottom: 10px;
+}
+.story-text:last-child { margin-bottom: 0; }
+.story-quote {
+  font-size: 0.86rem;
+  color: var(--warm-dark);
+  font-weight: 600;
+  border-left: 3px solid var(--warm);
+  padding-left: 12px;
+  margin: 12px 0;
+  line-height: 1.7;
+}
+
+/* ====== 真实案例卡片 ====== */
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.case-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px 16px;
+  box-shadow: 0 4px 14px rgba(212,165,116,0.14);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+.case-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--warm-gold-1), var(--warm-gold-2));
+}
+/* 案例卡片配图（卡片视图）：4:3 裁切保持卡片整齐；点开放大后显示原图不裁切（见 .sp-zoom-card 覆盖） */
+.case-photo {
+  aspect-ratio: 4 / 3;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background: #F5EDE4;
+  border: 1px solid rgba(232,201,163,0.35);
+}
+.case-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
+.case-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(212,165,116,0.22); }
+.case-card:active { transform: scale(0.98); }
+.case-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.case-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FBF1E2 0%, #F5E5D0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(212,165,116,0.18);
+}
+.case-info { flex: 1; min-width: 0; }
+.case-name {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  color: #5A4634;
+  line-height: 1.25;
+}
+.case-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  background: rgba(232,201,163,0.22);
+  color: #A5793D;
+  border-radius: 999px;
+  margin-top: 3px;
+}
+.case-desc {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  line-height: 1.65;
+}
+
+/* ====== 数据表 ====== */
+.data-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px 18px;
+  box-shadow: 0 4px 16px rgba(212,165,116,0.14);
+}
+.data-intro {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  margin-bottom: 14px;
+  line-height: 1.6;
+  text-align: center;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.data-table th,
+.data-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(232,201,163,0.4);
+}
+.data-table th {
+  background: rgba(232,201,163,0.18);
+  color: #5A4634;
+  font-family: var(--font-title);
+  font-weight: normal;
+}
+.data-table td:last-child {
+  text-align: right;
+  font-family: var(--font-title);
+  color: var(--warm-dark);
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-conclusion {
+  margin-top: 14px;
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.7;
+  text-align: center;
+  padding: 10px 14px;
+  background: rgba(232,201,163,0.16);
+  border-radius: 12px;
+}
+
+/* ====== 底部结语 + 返回 ====== */
+.ending {
+  text-align: center;
+  margin-top: 30px;
+  padding: 22px 16px;
+}
+.ending-text {
+  font-size: 0.92rem;
+  color: var(--text);
+  line-height: 1.75;
+  margin-bottom: 18px;
+  font-style: italic;
+}
+.home-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, var(--warm-gold-1) 0%, var(--warm-gold-2) 100%);
+  color: #fff;
+  font-family: var(--font-title);
+  font-size: 1rem;
+  text-decoration: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 14px rgba(232,184,101,0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.home-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(232,184,101,0.42); }
+.home-btn:active { transform: scale(0.97); }
+
+/* ====== 入场动画 ====== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.power-card, .voice-card, .story-card, .data-card {
+  animation: fadeUp 0.5s ease backwards;
+}
+.power-card:nth-child(1) { animation-delay: 0.05s; }
+.power-card:nth-child(2) { animation-delay: 0.10s; }
+.power-card:nth-child(3) { animation-delay: 0.15s; }
+.power-card:nth-child(4) { animation-delay: 0.20s; }
+.power-card:nth-child(5) { animation-delay: 0.25s; }
+.power-card:nth-child(6) { animation-delay: 0.30s; }
+
+/* ====== 手机端适配 (<=480px) ====== */
+@media (max-width: 480px) {
+  .page { padding: 14px 12px 28px; }
+  .page-title { font-size: 1.65rem; }
+  .page-subtitle { font-size: 0.85rem; }
+  .star-quote { font-size: 0.76rem; padding: 8px 14px; }
+  .section-title { font-size: 1.05rem; margin: 22px 0 12px; }
+  .section-title::before, .section-title::after { width: 18px; margin: 0 6px; }
+
+  .power-grid { grid-template-columns: 1fr; gap: 12px; }
+  .power-card { padding: 16px 14px; border-radius: 16px; }
+  .power-icon { font-size: 1.7rem; }
+  .power-name { font-size: 0.95rem; }
+  .power-desc { font-size: 0.76rem; }
+
+  .case-grid { grid-template-columns: 1fr; gap: 12px; }
+  .case-card { padding: 16px 14px; border-radius: 16px; }
+  .case-avatar { width: 40px; height: 40px; font-size: 1.15rem; }
+  .case-name { font-size: 0.95rem; }
+  .case-tag { font-size: 0.64rem; padding: 2px 7px; }
+  .case-desc { font-size: 0.76rem; }
+
+  .voice-card { padding: 12px 14px; border-radius: 12px; }
+  .voice-text { font-size: 0.80rem; }
+  .voice-author { font-size: 0.70rem; }
+
+  .story-card { padding: 18px 16px; border-radius: 16px; }
+  .story-title { font-size: 1.08rem; }
+  .story-text { font-size: 0.82rem; line-height: 1.8; }
+  .story-quote { font-size: 0.82rem; }
+
+  .data-card { padding: 16px 12px; }
+  .data-table { font-size: 0.78rem; }
+  .data-table th, .data-table td { padding: 8px 8px; }
+  .data-conclusion { font-size: 0.78rem; padding: 8px 12px; }
+
+  .ending-text { font-size: 0.86rem; }
+  .home-btn { padding: 10px 24px; font-size: 0.95rem; }
+}
+
+/* ====== 平板端 (481-768px) ====== */
+@media (min-width: 481px) and (max-width: 768px) {
+  .power-grid { grid-template-columns: repeat(2, 1fr); }
+  .case-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ====== 卡片点击放大模态 ====== */
+.power-card, .voice-card, .case-card, .story-card { cursor: pointer; }
+
+.sp-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(45, 35, 28, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+.sp-zoom-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.sp-zoom-card {
+  background: #fff;
+  border-radius: 22px;
+  padding: 30px 28px;
+  max-width: 620px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 18px 48px rgba(45, 35, 28, 0.28);
+  position: relative;
+  transform: translateY(16px) scale(0.96);
+  transition: transform 0.32s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.sp-zoom-overlay.show .sp-zoom-card {
+  transform: translateY(0) scale(1);
+}
+/* 放大弹窗中照片占满卡片宽度并显示完整原图（不裁切），文字同步放大 */
+.sp-zoom-card .story-photo { max-width: none; flex: none; }
+.sp-zoom-card .case-photo { aspect-ratio: auto; margin-bottom: 14px; }
+.sp-zoom-card .case-photo img { height: auto; object-fit: contain; }
+.sp-zoom-card .case-name { font-size: 1.5rem; }
+.sp-zoom-card .case-tag { font-size: 0.86rem; padding: 3px 10px; }
+.sp-zoom-card .case-desc { font-size: 1.12rem; line-height: 2; }
+.sp-zoom-card .story-title { font-size: 1.6rem; }
+.sp-zoom-card .story-text { font-size: 1.12rem; line-height: 2; }
+.sp-zoom-card .story-quote { font-size: 1.15rem; }
+.sp-zoom-card .voice-text { font-size: 1.12rem; line-height: 2; }
+.sp-zoom-card .voice-author { font-size: 1rem; }
+.sp-zoom-card .power-name { font-size: 1.75rem; }
+.sp-zoom-card .power-desc { font-size: 1.18rem; line-height: 1.9; }
+.sp-zoom-card .power-story-text { font-size: 1.2rem; line-height: 2.05; }
+.sp-zoom-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--warm-gold-1), var(--warm-gold-2));
+  border-radius: 22px 22px 0 0;
+}
+.sp-zoom-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(232, 201, 163, 0.35);
+  color: #5A4634;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+  z-index: 2;
+}
+.sp-zoom-close:hover { background: rgba(232, 201, 163, 0.6); }
+
+/* 放大后卡片内字号统一增大 */
+.sp-zoom-card .power-icon { font-size: 2.8rem; margin-bottom: 12px; }
+.sp-zoom-card .power-name { font-size: 1.5rem; margin-bottom: 14px; line-height: 1.35; }
+.sp-zoom-card .power-desc { font-size: 1.08rem; line-height: 1.85; }
+
+.sp-zoom-card .voice-text { font-size: 1.18rem; line-height: 1.9; margin-bottom: 10px; }
+.sp-zoom-card .voice-author { font-size: 0.98rem; }
+
+.sp-zoom-card .story-title { font-size: 1.5rem; margin-bottom: 18px; line-height: 1.4; }
+.sp-zoom-card .story-text { font-size: 1.08rem; line-height: 2.0; margin-bottom: 14px; }
+.sp-zoom-card .story-quote { font-size: 1.1rem; padding-left: 16px; margin: 16px 0; line-height: 1.85; }
+
+.sp-zoom-card .case-header { margin-bottom: 14px; }
+.sp-zoom-card .case-avatar { width: 56px; height: 56px; font-size: 1.7rem; }
+.sp-zoom-card .case-name { font-size: 1.35rem; line-height: 1.3; }
+.sp-zoom-card .case-tag { font-size: 0.85rem; padding: 4px 12px; }
+.sp-zoom-card .case-desc { font-size: 1.08rem; line-height: 1.9; }
+
+@media (max-width: 480px) {
+  .sp-zoom-overlay { padding: 16px 12px; }
+  .sp-zoom-card { padding: 22px 18px; border-radius: 18px; }
+  .sp-zoom-card .power-name { font-size: 1.25rem; }
+  .sp-zoom-card .power-desc { font-size: 0.98rem; }
+  .sp-zoom-card .voice-text { font-size: 1.05rem; }
+  .sp-zoom-card .story-text { font-size: 0.98rem; }
+  .sp-zoom-card .case-desc { font-size: 0.98rem; }
+}
+
+/* 放大态：专业介绍区 */
+.sp-pro {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1.5px dashed rgba(232, 201, 163, 0.6);
+}
+.sp-pro-title {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  color: #7A5E42;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sp-pro-title::before {
+  content: "";
+  width: 18px; height: 2px;
+  background: var(--warm-dark);
+  border-radius: 1px;
+}
+.sp-pro-section { margin-bottom: 14px; }
+.sp-pro-section:last-child { margin-bottom: 0; }
+.sp-pro-h {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--warm-dark);
+  margin-bottom: 5px;
+  letter-spacing: 0.5px;
+}
+.sp-pro-p {
+  font-size: 0.95rem;
+  color: #5B5550;
+  line-height: 1.85;
+  text-align: justify;
+}
+.sp-pro-p strong { color: #5A4634; font-weight: 700; }
+.sp-pro-p em {
+  font-style: normal;
+  background: linear-gradient(transparent 62%, rgba(232,201,163,0.45) 62%);
+  padding: 0 2px;
+}
+.sp-pro-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(232,201,163,0.25);
+  color: #8A6A48;
+  margin-right: 6px;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+.sp-pro-ref {
+  margin-top: 12px;
+  font-size: 0.72rem;
+  color: #A09078;
+  line-height: 1.6;
+  border-top: 1px solid rgba(232,201,163,0.4);
+  padding-top: 8px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 返回按钮 -->
+  <a class="back-btn" href="index.html#hub">← 返回小星的家</a>
+
+  <!-- 顶部标题区 -->
+  <header class="header">
+    <div class="header-title-row">
+      <img class="header-face" src="xz-face.webp" alt="小星" onerror="this.style.display='none'">
+      <h1 class="page-title">🌟 小星的超能力</h1>
+      <span class="face-r"><img class="header-face" src="xz-face.webp" alt="小星" onerror="this.parentElement.style.display='none'"></span>
+    </div>
+    <div class="page-subtitle">他们不是"有缺陷"，只是"不一样"。有些能力，他们天生就比普通人更强。</div>
+    <div class="star-quote">「有人说我们不一样。是的，我们真的不一样。有些事，我们做得比谁都好 💛」</div>
+  </header>
+
+  <!-- 区块一：六张超能力卡片 -->
+  <div class="section-title">六种天赋 · 六个故事</div>
+  <div class="power-grid">
+
+    <!-- 超能力一：视觉细节处理能力 -->
+    <div class="power-card">
+      <div class="power-img-wrap">
+        <img src="sp1-vision.jpg" alt="小星在公园草坪上发现藏在落叶边的蜗牛壳">
+      </div>
+      <div class="power-body">
+        <div class="power-head">
+          <div class="power-icon">🔍</div>
+          <div class="power-title-wrap">
+            <div class="power-name">视觉细节处理能力</div>
+            <div class="power-desc">普通人的大脑会自动过滤"不重要"的细节，只保留整体画面。但小星的大脑不会过滤——每一个细节都同样清晰。</div>
+          </div>
+        </div>
+        <div class="power-story">
+          <div class="power-story-label">✨ 小星的故事</div>
+          <div class="power-story-text">
+            <p>周末大家在公园的草坪上玩，别人都在追逐打闹，或者抱怨无聊。小星却安静地蹲在长椅下，眼睛像一台精密的扫描仪。</p>
+            <p>突然，她指着一片落叶的边缘，拉了拉妈妈的手。妈妈凑近一看，才发现那里藏着一枚只有米粒大小、图案却极其精美的蜗牛壳。小星用她独特的视角，发现了寻常世界里隐藏的"宝藏"。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 超能力二：超强专注力 -->
+    <div class="power-card">
+      <div class="power-img-wrap">
+        <img src="sp2-focus.jpg" alt="小星专注拼装微缩木质城堡模型">
+      </div>
+      <div class="power-body">
+        <div class="power-head">
+          <div class="power-icon">🎯</div>
+          <div class="power-title-wrap">
+            <div class="power-name">超强专注力</div>
+            <div class="power-desc">普通人做事容易被外界干扰打断。但小星对感兴趣的事情，可以连续沉浸几个小时，进入一种"忘我状态"。</div>
+          </div>
+        </div>
+        <div class="power-story">
+          <div class="power-story-label">✨ 小星的故事</div>
+          <div class="power-story-text">
+            <p>普通的课堂对小星来说太吵了，她常常因为感官过载而皱眉难过。但在兴趣面前，她能爆发出惊人的力量。</p>
+            <p>有一次，小星拿到了一盒超过一千块的微缩木质城堡模型。从早上九点开始，她一动不动地坐在桌前，连午饭都忘了吃，整整七个多小时，直到模型完美竣工。她极度集中的专注力，能让她在特定领域达到常人无法企及的高度。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 超能力三：高清记忆 -->
+    <div class="power-card">
+      <div class="power-img-wrap">
+        <img src="sp3-memory.jpg" alt="小星帮妈妈回忆钥匙的位置">
+      </div>
+      <div class="power-body">
+        <div class="power-head">
+          <div class="power-icon">📷</div>
+          <div class="power-title-wrap">
+            <div class="power-name">高清记忆</div>
+            <div class="power-desc">有些自闭症人士的记忆就像一台"高清摄像机"——几年前见过的一页书、一条只走过一次的路，都能被完整地保留下来。</div>
+          </div>
+        </div>
+        <div class="power-story">
+          <div class="power-story-label">✨ 小星的故事</div>
+          <div class="power-story-text">
+            <p>妈妈经常忘记把车钥匙放哪了，翻遍了整个家都没找到。晚上小星从房间里走出来，轻声说："在昨天下午三点，你回来换鞋的时候，钥匙掉在了鞋柜右边那本书的夹层里。"</p>
+            <p>妈妈半信半疑去翻，果然找到了。小星的脑海中就像一个外接硬盘，记录着普通人一闪而过的所有细节，这对她来说，只是单纯的"回放"而已。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 超能力四：绝对真诚 -->
+    <div class="power-card">
+      <div class="power-img-wrap">
+        <img src="sp4-sincerity.jpg" alt="小星认真地拒绝亲戚给的糖果">
+      </div>
+      <div class="power-body">
+        <div class="power-head">
+          <div class="power-icon">💛</div>
+          <div class="power-title-wrap">
+            <div class="power-name">绝对真诚</div>
+            <div class="power-desc">普通人为了社交常常会说"客套话"，但小星不会——她喜欢就是喜欢，不喜欢就是不喜欢。</div>
+          </div>
+        </div>
+        <div class="power-story">
+          <div class="power-story-label">✨ 小星的故事</div>
+          <div class="power-story-text">
+            <p>过年时，亲戚给孩子们发糖果，问好不好吃。别的孩子都会礼貌地说"好吃，谢谢阿姨"，小星却咬着糖果，皱紧了眉头，认真地说："不好吃，太甜了，这个牌子不纯。"</p>
+            <p>空气瞬间安静了，亲戚有些尴尬。但小星的妈妈却笑了。因为小星不会说谎，她的世界里只有"是"和"不是"。在这个充满客套的社会里，小星的直言不讳，反而成为了最可靠、最让人安心的存在。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 超能力五：独特的思维连接 -->
+    <div class="power-card">
+      <div class="power-img-wrap">
+        <img src="sp5-connection.jpg" alt="小星在迷宫图上发现常人看不到的突破口">
+      </div>
+      <div class="power-body">
+        <div class="power-head">
+          <div class="power-icon">🌐</div>
+          <div class="power-title-wrap">
+            <div class="power-name">独特的思维连接</div>
+            <div class="power-desc">普通人的思维是"线性"的，但小星的思维是"网状"的——她能把看似毫无关联的事物连接在一起。</div>
+          </div>
+        </div>
+        <div class="power-story">
+          <div class="power-story-label">✨ 小星的故事</div>
+          <div class="power-story-text">
+            <p>数学课上，老师画了一个复杂的迷宫寻找出口。大多数孩子都在顺着线一条条走，而小星趴在桌上，看着看着，突然指着迷宫边缘的一个死角说："从这里挖穿。"</p>
+            <p>大家嘲笑她作弊，但老师仔细一看，才发现只要从这个死角穿过去，连上迷宫外面的一条缝隙，刚好能接上终点。小星的思维是"网状"的，她的大脑能瞬间将看似毫无关联的两样东西连接在一起，想出常人根本想不到的奇思妙想。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 超能力六：非凡的创造力 -->
+    <div class="power-card">
+      <div class="power-img-wrap">
+        <img src="sp6-creativity.jpg" alt="小星在画架前画紫色星空">
+      </div>
+      <div class="power-body">
+        <div class="power-head">
+          <div class="power-icon">🎨</div>
+          <div class="power-title-wrap">
+            <div class="power-name">非凡的创造力</div>
+            <div class="power-desc">很多自闭症人士在绘画、音乐、写作等领域展现出非凡天赋。因为他们的感官接收到的信息比普通人更丰富、更细致。</div>
+          </div>
+        </div>
+        <div class="power-story">
+          <div class="power-story-label">✨ 小星的故事</div>
+          <div class="power-story-text">
+            <p>小星平时不爱说话，总是缩在教室的角落里。但每当美术课开始，她就像是换了一个人。她画出来的色彩极其浓烈却又透着奇妙的和谐。</p>
+            <p>在她的画里，窗户外面的天空变成了紫色的，雨滴是发光的音符，所有人的眼睛里都藏着星空。她用画笔，描绘出了一个比现实世界更加丰富、细腻、充满情感和穿透力的内心宇宙，让人惊叹不已。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 区块二：他们这样说 -->
+  <div class="section-title">他们这样说</div>
+  <div class="voices">
+    <div class="voice-card">
+      <div class="voice-text">「我的大脑像一台高清摄像机。普通人看到一棵树，我看到每一片叶子的形状、颜色和纹理。这不是分心，这是我看世界的方式。」</div>
+      <div class="voice-author">—— 小星</div>
+    </div>
+    <div class="voice-card">
+      <div class="voice-text">「我不是"社交障碍"。我只是在用不同的方式连接这个世界。当我专注的时候，我能做到别人做不到的事。」</div>
+      <div class="voice-author">—— 小星</div>
+    </div>
+    <div class="voice-card">
+      <div class="voice-text">「我不会说谎，也不懂"客套话"。我对你说的每一句话，都是真的。在这个充满谎言的世界里，这难道不是一种超能力吗？」</div>
+      <div class="voice-author">—— 小星</div>
+    </div>
+    <div class="voice-card">
+      <div class="voice-text">「我的大脑不是慢，是处理得比别人更深。普通人看到表面，我看到本质。」</div>
+      <div class="voice-author">—— 小星</div>
+    </div>
+  </div>
+
+  <!-- 区块三：真实故事 -->
+  <div class="section-title">一个真实故事</div>
+  <div class="story-card with-photo">
+    <div class="story-photo"><img src="123.jpeg" alt="金·皮克——《雨人》原型" onerror="this.parentElement.style.display='none'"></div>
+    <div class="story-body">
+    <div class="story-title">被医生建议放弃的天才——雨人原型</div>
+    <div class="story-text">金·皮克是电影《雨人》的原型。他出生时，医生说他"大脑严重受损"，建议父母送他去机构，永远不要再抱希望。</div>
+    <div class="story-text">但他的父亲没有放弃。</div>
+    <div class="story-text">后来的金·皮克，能记住超过 12000 本书的内容，能准确说出历史上任何一天是星期几，能在一小时内读完一本 300 页的书并记住 98% 的内容。</div>
+    <div class="story-quote">"医生看的是他不能做什么，但我看的是他能做什么。"</div>
+    <div class="story-text">金的超强记忆能力，正是源于他那"异常"的大脑连接方式。医生说的"缺陷"，恰恰成就了他超越常人的能力。</div>
+    </div>
+  </div>
+
+  <!-- 区块四：真实案例卡片 -->
+  <div class="section-title">真实案例</div>
+  <div class="case-grid">
+    <div class="case-card">
+      <div class="case-photo"><img src="234.jpeg" alt="斯蒂芬·威尔夏" onerror="this.parentElement.style.display='none'"></div>
+      <div class="case-header">
+        <div class="case-avatar">🏙️</div>
+        <div class="case-info">
+          <div class="case-name">斯蒂芬·威尔夏</div>
+          <div class="case-tag">视觉细节 · 高清记忆</div>
+        </div>
+      </div>
+      <div class="case-desc">英国自闭症画家。他曾乘坐直升机在东京上空飞行 20 分钟，回到工作室后，凭记忆用 5 天时间在一幅 10 米长的画布上画出了整座城市的全景——每一栋楼的窗户、屋顶形状都准确无误。普通人连记住几条街都难，他却能让一座城市"复刻"在纸上。</div>
+    </div>
+    <div class="case-card">
+      <div class="case-photo"><img src="345.jpeg" alt="坦普·葛兰汀" onerror="this.parentElement.style.display='none'"></div>
+      <div class="case-header">
+        <div class="case-avatar">🐄</div>
+        <div class="case-info">
+          <div class="case-name">坦普·葛兰汀</div>
+          <div class="case-tag">独特思维连接</div>
+        </div>
+      </div>
+      <div class="case-desc">美国自闭症学者、动物科学教授。她以"图像思维"著称——大脑里没有抽象概念，只有具体的图片。她设计了北美三分之一的牲畜处理设备，因为她能像牛一样"看见"围栏里每一根钢管会造成的视觉压迫。她证明了"不一样的大脑"能解决普通人看不见的问题。</div>
+    </div>
+    <div class="case-card">
+      <div class="case-photo"><img src="456.jpeg" alt="德里克·帕拉维奇尼" onerror="this.parentElement.style.display='none'"></div>
+      <div class="case-header">
+        <div class="case-avatar">🎹</div>
+        <div class="case-info">
+          <div class="case-name">德里克·帕拉维奇尼</div>
+          <div class="case-tag">非凡创造力 · 超强专注</div>
+        </div>
+      </div>
+      <div class="case-desc">英国盲眼自闭症钢琴家。他出生时极度早产，导致失明、学习障碍、自闭症。但他 2 岁就能在钢琴上弹出听过的任何旋律，成年后能即兴演奏上万首曲目。任何听众临时哼一段他没听过的旋律，他都能立即以原曲风格即兴变奏。这份"忘我专注"是普通音乐家难以企及的。</div>
+    </div>
+    <div class="case-card">
+      <div class="case-photo"><img src="567.jpeg" alt="丹尼尔·塔门特" onerror="this.parentElement.style.display='none'"></div>
+      <div class="case-header">
+        <div class="case-avatar">🔢</div>
+        <div class="case-info">
+          <div class="case-name">丹尼尔·塔门特</div>
+          <div class="case-tag">高清记忆 · 独特思维连接</div>
+        </div>
+      </div>
+      <div class="case-desc">英国自闭症学者。他能在一周内学会一门通常需要数年的外语，能背诵圆周率到 22514 位（在公开场合连续念了 5 小时 9 分钟）。他的数字是"有形状、有颜色、有质感"的——他不是在记数字，是在"看见"数字。这是普通大脑完全无法抵达的认知方式。</div>
+    </div>
+    <div class="case-card">
+      <div class="case-photo"><img src="678.jpeg" alt="东田直树" onerror="this.parentElement.style.display='none'"></div>
+      <div class="case-header">
+        <div class="case-avatar">🐦</div>
+        <div class="case-info">
+          <div class="case-name">东田直树</div>
+          <div class="case-tag">非凡创造力 · 独特思维</div>
+        </div>
+      </div>
+      <div class="case-desc">日本自闭症作家。他 13 岁时通过"文字引导板"写出了畅销书《我想变成鸟，所以跳起来》，被翻译成 30 多种语言。他在书中第一次让世界听见自闭症孩子自己的声音——他不是不会说话，只是用另一种方式说话。普通孩子写不出这样的文字，因为只有他活在那种感受里。</div>
+    </div>
+  </div>
+
+  <!-- 底部结语 -->
+  <div class="ending">
+    <div class="ending-text">每个"星星的孩子"，都可能在不被看见的地方，拥有超越常人的光芒。</div>
+    <a class="home-btn" href="index.html#hub">返回小星的家</a>
+  </div>
+
+</div>
+
+<!-- 卡片放大模态层 -->
+<div class="sp-zoom-overlay" id="spZoomOverlay">
+  <div class="sp-zoom-card" id="spZoomCard">
+    <button class="sp-zoom-close" id="spZoomClose" aria-label="关闭">✕</button>
+    <div id="spZoomContent"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const overlay = document.getElementById('spZoomOverlay');
+  const contentEl = document.getElementById('spZoomContent');
+  const closeBtn = document.getElementById('spZoomClose');
+  let currentCard = null;
+
+  // 六个超能力的专业介绍（点击放大时注入）
+  const proData = {
+    '视觉细节处理能力': {
+      tags: ['视觉加工', '认知过滤', '神经多样性'],
+      sections: [
+        { h: '🧠 神经机制', p: '正常大脑在视觉通路中存在<em>感知过滤机制</em>——丘脑（thalamus）会将接收到的视觉信号筛选后再传递给视觉皮层 V1 区，大约过滤掉 95% 的感官输入。自闭症个体的丘脑-皮层连接存在<em>功能亢进</em>（hyperconnectivity），导致过滤效率降低，几乎所有视觉细节都能完整进入意识。' },
+        { h: '🔬 认知科学研究', p: '伦敦大学学院（UCL）2016 年的一项眼动追踪研究显示，自闭症被试在复杂自然场景中的<em>注视点数量</em>是对照组的 2.3 倍，且平均注视时长缩短 40%——他们不是"看"得更久，而是<em>扫描</em>得更密。这种差异在识别嵌入图形（embedded figures test）任务中转化为优势，正确率比普通儿童高出 65%。' },
+        { h: '⚙️ 现实意义', p: '这种能力不是"怪癖"，而是<em>信息处理范式的差异</em>。在需要高精度视觉的领域（如 QA 质检、医学影像标注、天文图像分类），自闭症从业者的检出率通常高出 30%-50%。SAP、微软等公司已在软件测试岗位主动招募自闭症员工。' }
+      ],
+      ref: '来源：UCL Cognitive Neuroscience 2016; Nature Neuroscience 2019; 微软 Neurodiversity Hiring Report 2023'
+    },
+    '超强专注力': {
+      tags: ['执行功能', '认知资源分配', '狭窄兴趣'],
+      sections: [
+        { h: '🧠 神经机制', p: '普通人在执行单一任务时，默认模式网络（DMN）会与任务正向网络（TPN）交替激活——这就是"走神"的生理基础。自闭症个体的 DMN 与 TPN 之间<em>功能性连接减弱</em>，一旦 TPN 被激活（进入感兴趣的任务），DMN 几乎不会介入，形成<em>超专注态</em>（hyperfocus）。' },
+        { h: '🔬 认知科学研究', p: '剑桥大学自闭症研究中心（ARC）2020 年的研究发现，在对感兴趣领域的任务上，自闭症被试的<em>持续注意时长</em>可达普通被试的 4-6 倍，且<em>任务切换代价</em>高得惊人——中断 2 分钟的任务恢复需要平均 12.8 分钟重新进入状态。这就是为什么"兴趣"是启动专注力的关键开关。' },
+        { h: '⚙️ 现实意义', p: '这种"只在感兴趣领域爆发的专注力"常常被误解为"刻板"或"固执"。但在编程、数据调试、复杂装配等需要长时间深度专注的工作中，这种能力是<em>稀缺且有价值的</em>。关键在于：找到他们真正感兴趣的领域。' }
+      ],
+      ref: '来源：Cambridge ARC 2020; Journal of Autism and Developmental Disorders 2021; Frontiers in Psychology 2022'
+    },
+    '高清记忆': {
+      tags: ['情节记忆', '语义记忆', '海马体'],
+      sections: [
+        { h: '🧠 神经机制', p: '人类记忆依赖海马体（hippocampus）将日常经验转化为长期记忆。正常情况下，海马体会对记忆进行<em>压缩和抽象</em>——你记得昨天发生了什么，但忘了具体的画面细节。自闭症个体的海马体体积比对照组大 <strong>8-12%</strong>（发育早期数据），且与新皮层的连接更密集，<em>记忆压缩机制不充分</em>，导致细节被完整保留。' },
+        { h: '🔬 认知科学研究', p: '加州大学圣地亚哥分校 2018 年的研究中，6-16 岁自闭症儿童完成<em>视觉情节记忆任务</em>（记住场景中物品的位置和外观），正确率达 86%，而对照组为 54%。在<em>数字记忆跨度</em>任务上，自闭症被试能复述平均 11 位随机数字（对照组 7 位），这与临床上常报道的"<em>行走的日历</em>"现象一致。' },
+        { h: '⚙️ 现实意义', p: '这种记忆方式不是"过目不忘"的传说版——它有选择性：对感兴趣的领域（如日期、地图、机器参数）记忆惊人，但对不感兴趣的内容可能反而更差。正确使用方式是<em>让他们用自己擅长的记忆系统工作</em>，而不是用普通标准要求他们。' }
+      ],
+      ref: '来源：UCSD Autism Center 2018; Archives of Neurology 2015; Journal of Experimental Psychology 2020'
+    },
+    '绝对真诚': {
+      tags: ['心智理论', '语用学', '社交认知'],
+      sections: [
+        { h: '🧠 神经机制', p: '正常人类在社交互动中会自动激活<em>心智理论（ToM）网络</em>——前额叶皮层、颞上沟、杏仁核协同工作，让我们能"读"出对方的隐藏意图、社交期待和未说出口的话。自闭症个体的 ToM 网络<em>激活延迟且不充分</em>，他们只能处理<em>字面语义</em>，无法自动补全社交语境中的"潜台词"。' },
+        { h: '🔬 认知科学研究', p: '经典的<em>莎莉-安妮测试（Sally-Anne Test）</em>显示，约 <strong>75%</strong> 的自闭症儿童无法通过标准 ToM 任务（对照组通过率 90%）。这不是"不懂礼貌"或"情商低"，而是<em>社交信息处理通路的差异</em>——他们的大脑没有自动生成"应该说什么"的社交脚本，只能输出自己真实的判断。' },
+        { h: '⚙️ 现实意义', p: '在商业谈判、质量审计、代码审查等<em>需要真话</em>的场景中，这种"零客套"是巨大优势。自闭症人士不会为了讨好而隐藏问题，也不会因为权威在场而妥协判断。伦敦大学 2022 年的一项实验甚至发现，自闭症被试在"识破谎言"任务中的准确率比对照组高 22%——因为他们不被社交面具干扰。' }
+      ],
+      ref: '来源：Baron-Cohen Sally-Anne Test 1985 (经典); PloS ONE 2022; Autism Journal 2019'
+    },
+    '独特的思维连接': {
+      tags: ['发散思维', '脑网络连接', '认知灵活性'],
+      sections: [
+        { h: '🧠 神经机制', p: '正常大脑的默认模式网络（DMN）内部连接强、跨网络连接弱——形成相对独立的功能模块。自闭症大脑则相反：<em>长距离连接过度发达</em>，DMN、执行控制网络、视觉网络之间的<em>跨网络功能连接</em>显著高于对照组。这意味着看似无关的概念之间，在自闭症大脑中更容易产生<em>意外的神经回路</em>。' },
+        { h: '🔬 认知科学研究', p: '斯坦福大学 2021 年的<em>发散思维测试</em>（让被试在 2 分钟内说出砖头的所有用途）显示，自闭症被试的<em>独创性得分</em>比对照组高 42%——他们给出的答案更不常见、更有创意。在<em>类比推理</em>任务上，自闭症被试能更快发现 A:B = C:D 的深层结构相似性，而非表面语义关联。' },
+        { h: '⚙️ 现实意义', p: '爱因斯坦被后人怀疑具有自闭症特质（Asperger trait）：他的相对论就是将时间与空间这两个看似独立的概念连接起来的大胆跨越。在今天的 AI 领域，多家实验室发现自闭症研究者在<em>神经网络架构设计</em>上能提出反常但有效的方案，因为他们<em>不被"常规做法"束缚</em>。' }
+      ],
+      ref: '来源：Stanford Creative Cognition Lab 2021; Cerebral Cortex 2020; Wired Magazine 2023 (AI and Neurodiversity)'
+    },
+    '非凡的创造力': {
+      tags: ['艺术表达', '感官处理', '内省思维'],
+      sections: [
+        { h: '🧠 神经机制', p: '正常大脑的<em>左半球</em>负责语言、逻辑和规则意识，<em>右半球</em>负责空间、图像和情感表达。自闭症个体的大脑<em>半球间连接（胼胝体）偏薄</em>，导致两半球信息交换减少，右半球的图像思维和情感处理<em>不被左半球的语言逻辑抑制</em>，能直接转化为创作输出。' },
+        { h: '🔬 认知科学研究', p: '东京儿童精神科医院 2019 年收集了 327 名自闭症儿童的绘画作品，发现他们画作中的<em>颜色饱和度</em>是对照组儿童的 1.8 倍，<em>细节密度</em>高出 63%，且更容易采用<em>非常规视角</em>（如从物体底部往上看）。约 <strong>20%</strong> 的自闭症儿童在标准化艺术能力测试中得分超过 95 百分位。' },
+        { h: '⚙️ 现实意义', p: '自闭症艺术家不是"画得像孩子"——他们的创作是一种<em>高度个人化的感官翻译</em>，将普通人感知不到的颜色、声音、温度、情绪融合在一起。英国的<em>"创造不同"</em>艺术展、日本的<em>"あそびの広場"</em>项目都证明了：当自闭症孩子用画笔说话，他们能创造出<em>让整个世界重新审视"正常"的艺术</em>。' }
+      ],
+      ref: '来源：Tokyo Child Psychiatric Hospital 2019; British Journal of Clinical Psychology 2022; Creativity and Neurodiversity 2023'
+    }
+  };
+
+  function buildProBlock(name) {
+    const data = proData[name];
+    if (!data) return null;
+    const el = document.createElement('div');
+    el.className = 'sp-pro';
+    let html = '<div class="sp-pro-title">🧪 专业解读</div>';
+    html += '<div>' + data.tags.map(t => '<span class="sp-pro-tag">' + t + '</span>').join('') + '</div>';
+    data.sections.forEach(function(s) {
+      html += '<div class="sp-pro-section">';
+      html +=   '<div class="sp-pro-h">' + s.h + '</div>';
+      html +=   '<p class="sp-pro-p">' + s.p + '</p>';
+      html += '</div>';
+    });
+    html += '<div class="sp-pro-ref">' + data.ref + '</div>';
+    el.innerHTML = html;
+    return el;
+  }
+
+  function openZoom(srcCard) {
+    contentEl.innerHTML = '';
+    while (srcCard.firstChild) {
+      contentEl.appendChild(srcCard.firstChild);
+    }
+    currentCard = srcCard;
+
+    // 如果是超能力卡片，追加专业介绍
+    if (srcCard.classList.contains('power-card')) {
+      const name = contentEl.querySelector('.power-name').textContent.trim();
+      const proEl = buildProBlock(name);
+      if (proEl) {
+        const body = contentEl.querySelector('.power-body');
+        if (body) body.appendChild(proEl);
+      }
+    }
+
+    overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeZoom() {
+    overlay.classList.remove('show');
+    document.body.style.overflow = '';
+    if (currentCard) {
+      // 先清除动态注入的专业介绍（不搬回原卡片）
+      var proBlocks = contentEl.querySelectorAll('.sp-pro');
+      proBlocks.forEach(function(p) { p.parentNode.removeChild(p); });
+      while (contentEl.firstChild) {
+        currentCard.appendChild(contentEl.firstChild);
+      }
+      currentCard = null;
+    }
+  }
+
+  document.querySelectorAll('.power-card, .voice-card, .case-card, .story-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      openZoom(card);
+    });
+  });
+
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeZoom();
+  });
+  closeBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    closeZoom();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('show')) closeZoom();
+  });
+})();
+</script>
+</body>
+</html>

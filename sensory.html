@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🌈 小星的感官世界</title>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-title: "ZCOOL KuaiLe", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+  --bg: #F7F0EA;
+  --text: #5B5550;
+  --text-light: #8A8278;
+  --warm: #E8C9A3;
+  --warm-dark: #D4A574;
+  --card-bg: #FFFFFF;
+  --link: #D4A574;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  background-image: url("c4635bbcd67e0ba305373be896a13b8f.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 20px 16px 60px;
+}
+
+/* ====== 返回按钮 ====== */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--warm-dark);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(232,201,163,0.25);
+  margin-bottom: 14px;
+  transition: all 0.2s;
+}
+.back-btn:hover { background: rgba(232,201,163,0.4); }
+
+/* ====== 标题区 ====== */
+.header { text-align: center; margin-bottom: 20px; }
+.header-title-row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.header-face {
+  width: 62px;
+  flex: none;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(90,70,52,0.16));
+  animation: faceFloat 3s ease-in-out infinite;
+}
+.face-r { display: inline-flex; flex: none; transform: scaleX(-1); }
+@keyframes faceFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@media (max-width: 480px) {
+  .header-face { width: 46px; }
+  .header-title-row { gap: 10px; }
+}
+.page-title { font-family: var(--font-title); font-size: 1.9rem; color: var(--text); }
+.page-subtitle { font-size: 0.92rem; color: var(--text-light); margin-top: 4px; }
+
+/* ====== 体验卡片（主页三列） ====== */
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  margin-top: 18px;
+  max-width: 1560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.explore-card {
+  background: var(--card-bg);
+  border-radius: 30px;
+  padding: 56px 40px 52px;
+  box-shadow: 0 4px 18px rgba(91,85,80,0.07);
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.explore-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(232,201,163,0.3); }
+.explore-card:active { transform: scale(0.98); }
+
+.ec-icon { font-size: 5.4rem; margin-bottom: 18px; }
+/* 卡片配图：加载成功才显示，失败自动回退为 emoji 图标；通栏铺满卡片顶部 */
+.ec-img {
+  display: none;
+  width: calc(100% + 80px);        /* 抵消卡片左右 padding，铺满整卡 */
+  max-width: none;
+  margin: -56px -40px 22px;        /* 抵消卡片顶部 padding，贴住卡片上缘 */
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 30px 30px 0 0;    /* 顶部圆角与卡片一致 */
+  box-shadow: 0 6px 16px rgba(91,85,80,0.12);
+}
+.ec-name { font-family: var(--font-title); font-size: 2.1rem; color: var(--text); margin-bottom: 10px; }
+.ec-desc { font-size: 1.25rem; color: var(--text-light); line-height: 1.75; margin-bottom: 24px; }
+
+/* 视频占位区 */
+.ec-video-ph {
+  background: linear-gradient(135deg, #EDE6DE 0%, #DDD3C7 100%);
+  border-radius: 14px;
+  aspect-ratio: 16/9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #9E9285;
+  font-size: 0.8rem;
+  gap: 4px;
+  margin-bottom: 12px;
+  border: 2px dashed rgba(158,146,133,0.4);
+}
+.ec-video-ph .ph-icon { font-size: 1.6rem; opacity: 0.7; }
+
+.ec-count { font-size: 1.15rem; color: var(--warm-dark); margin-bottom: 18px; }
+
+.ec-enter-btn {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: var(--warm-dark);
+  background: rgba(232,201,163,0.3);
+  border-radius: 20px;
+  padding: 13px 0;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.ec-enter-btn:hover { background: rgba(232,201,163,0.5); }
+
+@media (max-width: 720px) {
+  .explore-grid { grid-template-columns: 1fr; max-width: 460px; margin-left: auto; margin-right: auto; }
+}
+
+/* ====== 全屏体验页 ====== */
+.experience-view {
+  position: fixed;
+  inset: 0;
+  background: #F7F0EA;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+.experience-view.active { opacity: 1; pointer-events: auto; }
+
+/* 体验页顶部栏 */
+.exp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(232,201,163,0.35);
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
+  gap: 10px;
+}
+.exp-name { font-family: var(--font-title); font-size: 1.2rem; color: var(--text); }
+.exp-progress { font-size: 0.78rem; color: var(--text-light); }
+
+/* 体验页中央视频区 */
+.exp-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  gap: 12px;
+}
+.exp-video-ph {
+  /* 尽量放大：受容器宽度、1400px 上限与视口高度（保证不溢出）共同约束 */
+  width: min(100%, 1400px, calc((100vh - 210px) * 16 / 9));
+  aspect-ratio: 16/9;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #EDE6DE 0%, #DDD3C7 100%);
+  border: 2px dashed rgba(138,126,112,0.4);
+  animation: fadeInContent 0.5s ease;
+}
+.exp-video-ph video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+}
+@keyframes fadeInContent { from { opacity: 0; } to { opacity: 1; } }
+.exp-video-ph.vid-switching { animation: fadeInContent 0.5s ease; }
+.exp-video-ph .ph-icon { font-size: 2.4rem; opacity: 0.6; }
+.exp-video-ph .ph-title { font-family: var(--font-title); font-size: 1.1rem; }
+.exp-video-ph .ph-sub { font-size: 0.78rem; }
+
+/* 视频来源声明 */
+.exp-source {
+  text-align: center;
+  font-size: 16px;
+  color: #666666;
+  padding: 12px 20px 0;
+}
+.exp-source a {
+  color: #666666;
+  text-decoration: none;
+  border-bottom: 1px dotted #aaa;
+}
+.exp-source a:hover { color: #555; border-bottom-color: #555; }
+
+/* 体验页底部按钮 */
+.exp-footer {
+  padding: 16px 20px 22px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+.exp-prev-btn {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  color: #fff;
+  background: linear-gradient(135deg, #C08E57 0%, var(--warm-dark) 100%);
+  border: none;
+  border-radius: 28px;
+  padding: 12px 36px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(212,165,116,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.exp-prev-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,165,116,0.55); }
+.exp-prev-btn:active { transform: scale(0.97); }
+.exp-next-btn {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--warm-dark) 0%, #C08E57 100%);
+  border: none;
+  border-radius: 28px;
+  padding: 12px 36px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(212,165,116,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.exp-next-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,165,116,0.55); }
+.exp-next-btn:active { transform: scale(0.97); }
+
+/* ====== 科普弹窗 ====== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(41,37,33,0.5);
+  backdrop-filter: blur(3px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  padding: 20px;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-box {
+  background: var(--card-bg);
+  border-radius: 26px;
+  padding: 32px 32px 28px;
+  max-width: 640px;
+  width: 100%;
+  max-height: 84vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  animation: modalPop 0.3s ease;
+}
+@keyframes modalPop { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-title { font-family: var(--font-title); font-size: 1.55rem; color: var(--warm-dark); margin-bottom: 16px; }
+.modal-content { font-size: 1.05rem; line-height: 1.9; color: var(--text); }
+.modal-close {
+  display: block;
+  margin: 20px auto 0;
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--warm-dark) 0%, #C08E57 100%);
+  border: none;
+  border-radius: 24px;
+  padding: 10px 40px;
+  cursor: pointer;
+}
+
+/* 切换动画 */
+.fade-in { animation: fadeInContent 0.5s ease; }
+/* ====== 引入弹窗 ====== */
+.intro-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(40, 35, 45, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.intro-modal.show { opacity: 1; pointer-events: auto; }
+.intro-card {
+  position: relative;
+  width: min(540px, 92vw);
+  max-height: 82vh;
+  overflow-y: auto;
+  background: #FDF6F0;
+  border-radius: 26px;
+  padding: 36px 32px 28px;
+  box-shadow: 0 20px 60px rgba(91,85,80,0.25),
+              inset 0 1px 0 rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.55);
+  transform: translateY(14px) scale(0.96);
+  transition: transform 0.35s ease;
+}
+.intro-modal.show .intro-card { transform: translateY(0) scale(1); }
+.intro-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 32px; height: 32px;
+  border: none;
+  background: transparent;
+  color: #9E9285;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+.intro-close:hover { background: rgba(0,0,0,0.06); color: #5B5550; }
+.intro-top { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+.intro-avatar {
+  flex: 0 0 130px;
+  text-align: center;
+}
+.intro-avatar img {
+  width: 130px;
+  border-radius: 50%;
+  animation: introBreath 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12));
+}
+@keyframes introBreath {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+.intro-bubble {
+  position: relative;
+  flex: 1;
+  background: #FDF6F0;
+  border: 2px solid #E8C9A3;
+  border-radius: 16px;
+  padding: 16px 18px;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #5B5550;
+}
+.intro-bubble::before {
+  content: '';
+  position: absolute;
+  left: -11px;
+  top: 26px;
+  border: 10px solid transparent;
+  border-right-color: #E8C9A3;
+}
+.intro-bubble::after {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 28px;
+  border: 8px solid transparent;
+  border-right-color: #FDF6F0;
+}
+.intro-title {
+  font-family: var(--font-title);
+  font-size: 1.35rem;
+  color: var(--warm-dark);
+  text-align: center;
+  margin-bottom: 14px;
+}
+.intro-body p { margin: 0 0 8px; }
+.intro-body p:last-child { margin-bottom: 0; }
+.intro-btn {
+  display: block;
+  margin: 18px auto 0;
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  color: #fff;
+  background: linear-gradient(135deg, #C08E57 0%, #D7A56A 100%);
+  border: none;
+  border-radius: 22px;
+  padding: 10px 40px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(192,142,87,0.35);
+  transition: all 0.2s;
+}
+.intro-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,142,87,0.5); }
+
+@media (max-width: 560px) {
+  .intro-card { padding: 28px 20px 22px; }
+  .intro-top { flex-direction: column; align-items: center; gap: 12px; }
+  .intro-avatar img { width: 100px; }
+  .intro-bubble { font-size: 0.88rem; line-height: 1.75; padding: 12px 14px; width: 100%; }
+  .intro-bubble::before {
+    left: 50%; top: -19px;
+    transform: translateX(-50%);
+    border: 10px solid transparent; border-bottom-color: #E8C9A3;
+  }
+  .intro-bubble::after {
+    left: 50%; top: -15px;
+    transform: translateX(-50%);
+    border: 8px solid transparent; border-bottom-color: #FDF6F0;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============ 引入弹窗 ============ -->
+<div class="intro-modal" id="introModal">
+  <div class="intro-card">
+    <button class="intro-close" id="introClose" aria-label="关闭">✕</button>
+    <div class="intro-title">🌈 欢迎来到小星的感官世界</div>
+    <div class="intro-top">
+      <div class="intro-avatar">
+        <img src="xz-wave.png" alt="小星向你招手" onerror="this.src='xz-face.webp'">
+      </div>
+      <div class="intro-bubble">
+        <p><b>嗨 👋 你好呀</b></p>
+        <p>这里有三个体验馆——👁️ 视觉过载、👂 听觉过载、🌊 感官混合。</p>
+        <p>点击卡片进入，用视频体验我眼中的、耳边的、身体里的世界 💛</p>
+      </div>
+    </div>
+    <div class="intro-body"></div>
+    <button class="intro-btn" id="introBtn">我准备好了 ✨</button>
+  </div>
+</div>
+
+<!-- ============ 主页面 ============ -->
+<div class="page" id="homeView">
+
+  <a class="back-btn" href="index.html#hub">← 返回小星的家</a>
+
+  <div class="header">
+    <div class="header-title-row">
+      <img class="header-face" src="xz-face.webp" alt="小星" onerror="this.style.display='none'">
+      <h1 class="page-title">🌈 小星的感官世界</h1>
+      <span class="face-r"><img class="header-face" src="xz-face.webp" alt="小星" onerror="this.parentElement.style.display='none'"></span>
+    </div>
+    <p class="page-subtitle">点击一个感官，体验小星眼中的世界</p>
+  </div>
+
+  <div class="explore-grid">
+
+    <!-- 卡片一：视觉过载 -->
+    <div class="explore-card" data-exp="visual">
+      <div class="ec-icon" style="display:none;">👁️</div>
+      <img class="ec-img" src="视觉.webp" alt="视觉过载配图" onload="this.style.display='block'" onerror="this.style.display='none';this.previousElementSibling.style.display='block';">
+      <div class="ec-name">视觉过载</div>
+      <div class="ec-desc">灯光刺眼 · 色彩过载 · 世界太亮了</div>
+      <div class="ec-count">共 3 个体验</div>
+      <button class="ec-enter-btn">进入体验 →</button>
+    </div>
+
+    <!-- 卡片二：听觉过载 -->
+    <div class="explore-card" data-exp="audio">
+      <div class="ec-icon" style="display:none;">👂</div>
+      <img class="ec-img" src="听觉.webp" alt="听觉过载配图" onload="this.style.display='block'" onerror="this.style.display='none';this.previousElementSibling.style.display='block';">
+      <div class="ec-name">听觉过载</div>
+      <div class="ec-desc">脚步声放大 · 声音无孔不入 · 世界太吵了</div>
+      <div class="ec-count">共 2 个体验</div>
+      <button class="ec-enter-btn">进入体验 →</button>
+    </div>
+
+    <!-- 卡片三：感官混合 -->
+    <div class="explore-card" data-exp="mixed">
+      <div class="ec-icon" style="display:none;">🌊</div>
+      <img class="ec-img" src="感官过载.webp" alt="感官混合配图" onload="this.style.display='block'" onerror="this.style.display='none';this.previousElementSibling.style.display='block';">
+      <div class="ec-name">感官混合</div>
+      <div class="ec-desc">多重感官同时冲击 · 从过载到崩溃</div>
+      <div class="ec-count">共 2 个体验</div>
+      <button class="ec-enter-btn">进入体验 →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ 全屏体验页（动态渲染） ============ -->
+<div class="experience-view" id="expView">
+  <div class="exp-header">
+    <a class="back-btn" href="javascript:void(0)" onclick="exitExperience()" style="margin:0;">← 返回</a>
+    <div class="exp-name" id="expName">👁️ 视觉过载</div>
+    <div class="exp-progress" id="expProgress">1 / 2</div>
+  </div>
+
+  <div class="exp-main">
+    <video class="exp-video-ph" id="expVideoPh" playsinline loop muted controls style="display:none;">
+      您的浏览器不支持视频播放
+    </video>
+    <div class="exp-video-ph" id="expVideoFallback">
+      <div class="ph-icon">🎬</div>
+      <div class="ph-title" id="expVidTitle">视频待添加</div>
+      <div class="ph-sub">暂无视频</div>
+    </div>
+  </div>
+
+  <div class="exp-source" id="expSource"></div>
+
+  <div class="exp-footer">
+    <button class="exp-prev-btn" id="expPrevBtn" onclick="prevVideo()" style="display:none;">← 上一个</button>
+    <button class="exp-next-btn" id="expNextBtn" onclick="nextVideo()">下一个 →</button>
+  </div>
+</div>
+
+<!-- ============ 科普弹窗 ============ -->
+<div class="modal-overlay" id="scienceModal">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">📖 科普解释</div>
+    <div class="modal-content" id="modalContent"></div>
+    <button class="modal-close" onclick="closeScienceModal()">我知道了</button>
+  </div>
+</div>
+
+<script>
+/* ===== 引入弹窗 ===== */
+(function() {
+  const modal = document.getElementById('introModal');
+  const closeBtn = document.getElementById('introClose');
+  const introBtn = document.getElementById('introBtn');
+
+  function closeIntro() {
+    modal.classList.remove('show');
+  }
+
+  window.addEventListener('load', function() {
+    setTimeout(function() { modal.classList.add('show'); }, 180);
+  });
+
+  closeBtn.addEventListener('click', closeIntro);
+  introBtn.addEventListener('click', closeIntro);
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) closeIntro();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('show')) closeIntro();
+  });
+})();
+
+/* ===== 体验馆数据 ===== */
+const experiences = {
+  visual: {
+    icon: '👁️',
+    name: '视觉过载',
+    videos: [
+      { title: '灯光刺激', src: '灯光刺激2.mp4', source: 'BV1ys411q7Dx' },
+      { title: '鲜艳的颜色', src: '鲜艳的颜色.mp4', source: 'BV1ys411q7Dx' },
+      { title: '色彩鲜艳', src: '色彩鲜艳.mp4', source: 'BV1ys411q7Dx' }
+    ],
+    science: `📌 **科普知识：视觉敏感与感官过载**\n\n大约 40% 的自闭症人士存在视觉加工异常。他们的大脑像一台"关不掉滤镜"的相机——普通人会自动忽略的细节，他们都被迫看得清清楚楚。\n\n👓 **他们眼中的世界可能是这样的**\n日光灯其实在以肉眼看不见的频率闪烁，他们能"看"到这种闪烁；彩色的墙面装饰、转动的风扇、晃动的影子，都像被调亮了十倍。有孩子说："看人的眼睛太亮了，像看太阳。"\n\n👀 **常见的表现**\n在明亮的环境里揉眼睛、闭眼、想把灯关掉；在视觉信息嘈杂的场合烦躁不安；很少与人对视——不是不礼貌，而是目光带来的刺激太强烈了；也可能反过来，长时间盯着旋转的东西看，那是他们在整理混乱的视觉信息。\n\n💡 **我们可以这样帮忙**\n允许他们戴帽子、墨镜，或坐在光线柔和的位置；房间和教室布置尽量简洁，少贴花哨的装饰；说话时蹲下来平视，但不强求"看着我的眼睛"；当他们闭眼、背对光源时，先想想是不是光太亮了。\n\n这不是"矫情"，而是真实的神经差异。读懂了这一点，就能读懂许多"奇怪"行为背后的原因。`
+  },
+  audio: {
+    icon: '👂',
+    name: '听觉过载',
+    videos: [
+      { title: '走路踢踏声', src: '走路踢踏声.mp4', source: 'BV1Xa411d7ht' },
+      { title: '无孔不入的声音', src: '无孔不入的声音.mp4', source: 'BV1ys411q7Dx' }
+    ],
+    science: `📌 **科普知识：听觉过载**\n\n自闭症人士中约 70% 存在听觉敏感。他们大脑里负责"屏蔽背景噪音"的过滤器没有正常工作——所有声音一起涌进来，而且一样响亮。\n\n🔊 **他们耳中的世界可能是这样的**\n老师的讲课声、窗外的风声、空调的嗡嗡声、同学的翻书声、远处的脚步声……几十种声音同时播放，没有主次。有人形容："像同时打开一百个电视。"\n\n😖 **常见的表现**\n突然捂住耳朵、蹲下、尖叫或大哭；在嘈杂的场合想逃离；发出"啊啊"的声音或摇晃身体——这叫"自我调节"，是用自己的声音盖过外面的声音，帮自己平静下来。\n\n🤫 **我们可以这样帮忙**\n允许并为他们准备降噪耳机或耳塞；带他们进入新环境前，提前说说那里会有什么声音；知道会有巨响时先打个招呼（比如"吹风机要开啦"）；在家里或教室设一个安静的角落；不要说"忍一忍就好"——他们真的忍不住。\n\n当孩子捂住耳朵时，他不是在闹脾气，而是在保护自己。`
+  },
+  mixed: {
+    icon: '🌊',
+    name: '感官混合',
+    videos: [
+      { title: '感官过载', src: '感官过载.mp4', source: 'BV1Xa411d7ht' },
+      { title: '电视，崩溃', src: '电视，崩溃.mp4', source: 'BV1ys411q7Dx' }
+    ],
+    science: `📌 **科普知识：感官混合与崩溃**\n\n当视觉、听觉等多种感官同时过载，神经系统就会像"超负荷的电路"一样跳闸——这就是"崩溃"（Meltdown）。它不是发脾气，更不是故意作对。\n\n🫙 **崩溃像一杯慢慢装满的水**\n每一次刺眼的光、吵闹的声音、被打乱的计划，都是往杯子里加水。平时看不出来，但水一旦满了，哪怕再小的一滴（比如一句"快点"），都会让水溢出来。\n\n⚠️ **崩溃前的信号**\n捂耳朵、踱步、呼吸变快、反复说"走开""不要"——这些不是挑衅，而是求救信号。还有的孩子会突然沉默、呆住、不理人，这叫"关机"（Shutdown），同样是在自我保护。\n\n🫂 **崩溃时可以这样做**\n首先保证安全，移开尖锐物品；不要围观、说教或大声呵斥；调暗灯光、降低周围的音量；安静地陪在旁边，等"水位"慢慢退下去。此时讲道理是没有用的——他的大脑已经暂时"离线"了。\n\n🌱 **崩溃之后**\n不要追问"你刚才为什么那样"，也不要责备。递一杯水，安静地陪伴就好。崩溃过后，他们自己往往也很累、很难受。\n\n多一分理解，他们就知道：这个世界依然是安全的。`
+  }
+};
+
+/* ===== 状态 ===== */
+let currentExpKey = null;
+let currentVidIdx = 0;
+
+/* ===== 进入体验 ===== */
+document.querySelectorAll('.explore-card').forEach(card => {
+  card.addEventListener('click', () => enterExperience(card.dataset.exp));
+});
+
+function enterExperience(key) {
+  currentExpKey = key;
+  currentVidIdx = 0;
+  renderExperience();
+  const view = document.getElementById('expView');
+  view.classList.add('active');
+}
+
+function exitExperience() {
+  document.getElementById('expView').classList.remove('active');
+  currentExpKey = null;
+}
+
+function renderExperience() {
+  const exp = experiences[currentExpKey];
+  document.getElementById('expName').textContent = `${exp.icon} ${exp.name}`;
+  document.getElementById('expProgress').textContent = `${currentVidIdx + 1} / ${exp.videos.length}`;
+
+  const vidData = exp.videos[currentVidIdx];
+  const videoEl = document.getElementById('expVideoPh');
+  const fallbackEl = document.getElementById('expVideoFallback');
+  const fallbackTitle = document.getElementById('expVidTitle');
+
+  if (vidData.src) {
+    // 有真实视频
+    videoEl.src = vidData.src;
+    videoEl.style.display = 'block';
+    fallbackEl.style.display = 'none';
+    videoEl.classList.remove('fade-in');
+    void videoEl.offsetWidth;
+    videoEl.classList.add('fade-in');
+    videoEl.currentTime = 0;
+  } else {
+    // 占位
+    videoEl.pause();
+    videoEl.removeAttribute('src');
+    videoEl.style.display = 'none';
+    fallbackEl.style.display = 'flex';
+    fallbackEl.classList.remove('fade-in');
+    void fallbackEl.offsetWidth;
+    fallbackEl.classList.add('fade-in');
+    fallbackTitle.textContent = vidData.title + ' - 视频待添加';
+  }
+
+  // 来源声明
+  const sourceEl = document.getElementById('expSource');
+  if (vidData.source) {
+    sourceEl.innerHTML = '视频来源：<a href="https://www.bilibili.com/video/' + vidData.source + '" target="_blank" rel="noopener">B站 ' + vidData.source + '</a>';
+    sourceEl.style.display = 'block';
+  } else {
+    sourceEl.style.display = 'none';
+  }
+
+  // 按钮文字 + 上一个/下一个按钮
+  const btn = document.getElementById('expNextBtn');
+  const prevBtn = document.getElementById('expPrevBtn');
+  // 当前不是第一个视频时显示「上一个」
+  prevBtn.style.display = (currentVidIdx > 0) ? 'inline-block' : 'none';
+  if (currentVidIdx < exp.videos.length - 1) {
+    btn.textContent = '下一个 →';
+    btn.onclick = nextVideo;
+  } else {
+    btn.textContent = '📖 查看科普解释';
+    btn.onclick = showScienceModal;
+  }
+}
+
+function prevVideo() {
+  if (currentVidIdx > 0) {
+    currentVidIdx--;
+    renderExperience();
+  }
+}
+
+function nextVideo() {
+  const exp = experiences[currentExpKey];
+  if (currentVidIdx < exp.videos.length - 1) {
+    currentVidIdx++;
+    renderExperience();
+  }
+}
+
+/* ===== 科普弹窗 ===== */
+function showScienceModal() {
+  const exp = experiences[currentExpKey];
+  document.getElementById('modalTitle').textContent = `📖 ${exp.name} · 科普解释`;
+  document.getElementById('modalContent').innerHTML = exp.science.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+  document.getElementById('scienceModal').classList.add('active');
+}
+function closeScienceModal() {
+  document.getElementById('scienceModal').classList.remove('active');
+}
+// 点击遮罩关闭
+document.getElementById('scienceModal').addEventListener('click', (e) => {
+  if (e.target.id === 'scienceModal') closeScienceModal();
+});
+// ESC 关闭
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeScienceModal();
+    if (document.getElementById('expView').classList.contains('active')) exitExperience();
+  }
+});
+</script>
+</body>
+</html>

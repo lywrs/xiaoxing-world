@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>问小星 🤖</title>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-title: "ZCOOL KuaiLe", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+  --bg: #F7F0EA;
+  --text: #5B5550;
+  --text-light: #8A8278;
+  --warm: #E8C9A3;
+  --warm-dark: #D4A574;
+  --warm-gold-1: #F5D58B;
+  --warm-gold-2: #E8B865;
+  --card-bg: #FFFFFF;
+  --link: #D4A574;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 18px 18px 32px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ====== 左上角返回按钮 ====== */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 8px 16px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.85rem;
+  text-decoration: none;
+  border-radius: 999px;
+  border: 1px solid var(--warm);
+  box-shadow: 0 2px 6px rgba(212,165,116,0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  margin-bottom: 18px;
+}
+.back-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(212,165,116,0.28); }
+.back-btn:active { transform: scale(0.97); }
+
+/* ====== 顶部标题区 ====== */
+.header {
+  text-align: center;
+  margin-bottom: 22px;
+  padding: 0 6px;
+}
+.header-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.header-face {
+  width: 70px;
+  flex: none;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(90,70,52,0.16));
+  animation: faceFloat 3s ease-in-out infinite;
+}
+.face-r { display: inline-flex; flex: none; transform: scaleX(-1); }
+@keyframes faceFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@media (max-width: 480px) {
+  .header-face { width: 52px; }
+  .header-title-row { gap: 10px; }
+}
+.page-title {
+  font-family: var(--font-title);
+  font-size: 2.3rem;
+  color: #5A4634;
+  margin-bottom: 6px;
+}
+.page-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-light);
+  margin-bottom: 14px;
+}
+.page-hint {
+  display: inline-block;
+  padding: 10px 18px;
+  background: rgba(232,201,163,0.25);
+  border-radius: 14px;
+  font-size: 0.88rem;
+  color: #7A6A55;
+  line-height: 1.6;
+  max-width: 100%;
+}
+
+/* ====== 问答主卡片 ====== */
+.chat-card {
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 6px 22px rgba(212,165,116,0.18);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 60vh;
+}
+
+.chat-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 22px;
+  background: linear-gradient(135deg, #FBF1E2 0%, #F5E5D0 100%);
+  border-bottom: 1px solid rgba(212,165,116,0.18);
+}
+.chat-head-face {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+.chat-head-txt { flex: 1; min-width: 0; }
+.chat-head-name { font-family: var(--font-title); font-size: 1.28rem; color: #5A4634; }
+.chat-head-status { font-size: 0.84rem; color: #7A8A6A; display: flex; align-items: center; gap: 5px; }
+.chat-dot-online { width: 7px; height: 7px; border-radius: 50%; background: #7EAE70; display: inline-block; box-shadow: 0 0 0 3px rgba(126,174,112,0.18); }
+.chat-dot-off { width: 7px; height: 7px; border-radius: 50%; background: #C9C2B8; display: inline-block; }
+.chat-reset {
+  border: none; background: #fff; color: #7A6A55;
+  font-size: 0.88rem; padding: 8px 15px; border-radius: 999px;
+  cursor: pointer; border: 1px solid var(--warm);
+  transition: background 0.18s;
+  flex-shrink: 0;
+}
+.chat-reset:hover { background: #EBDFCC; }
+
+.chat-window {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #FBF7F2;
+  min-height: 320px;
+  max-height: 56vh;
+}
+.chat-window::-webkit-scrollbar { width: 5px; }
+.chat-window::-webkit-scrollbar-thumb { background: rgba(212,165,116,0.35); border-radius: 3px; }
+
+.msg { display: flex; gap: 10px; max-width: 88%; animation: msgIn 0.35s ease both; }
+@keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.msg.bot { align-self: flex-start; }
+.msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.msg-face {
+  width: 42px; height: 42px; border-radius: 50%; object-fit: cover;
+  border: 1.5px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+.msg-bubble {
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.msg.bot .msg-bubble {
+  background: #fff;
+  color: var(--text);
+  border-top-left-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.msg.user .msg-bubble {
+  background: linear-gradient(135deg, var(--warm-gold-1), var(--warm-gold-2));
+  color: #4A3A24;
+  border-top-right-radius: 4px;
+  box-shadow: 0 2px 8px rgba(232,184,101,0.25);
+}
+.msg-bubble .src-link {
+  display: inline-block;
+  margin-top: 8px;
+  margin-right: 8px;
+  padding: 5px 12px;
+  font-size: 0.84rem;
+  color: var(--warm-dark);
+  background: rgba(212,165,116,0.12);
+  border-radius: 999px;
+  text-decoration: none;
+}
+.msg-bubble .src-link:hover { background: rgba(212,165,116,0.22); }
+
+.typing-bubble { display: inline-flex; gap: 4px; padding: 12px 16px; }
+.typing-bubble span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--warm-dark);
+  animation: typingDot 1.2s infinite ease-in-out;
+}
+.typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
+.typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDot { 0%,60%,100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+/* 流式输出光标 */
+.stream-cursor {
+  display: inline-block;
+  color: var(--warm-dark);
+  font-weight: bold;
+  animation: blink 0.9s infinite;
+  margin-left: 1px;
+}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+.msg-follow { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 2px 54px; }
+.follow-chip {
+  border: 1px solid var(--warm);
+  background: #fff;
+  color: #7A6A55;
+  font-size: 0.88rem;
+  padding: 7px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s;
+}
+.follow-chip:hover { background: rgba(232,201,163,0.28); }
+.follow-chip:active { transform: scale(0.96); }
+
+/* ====== 帮助反馈行 ====== */
+.feedback-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.84rem;
+  color: var(--text-light);
+}
+.feedback-btn {
+  border: 1px solid var(--warm);
+  background: #fff;
+  color: #7A6A55;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  transition: background 0.18s, transform 0.18s;
+}
+.feedback-btn:hover { background: rgba(232,201,163,0.22); }
+.feedback-btn.active { background: var(--warm-gold-2); color: #fff; border-color: var(--warm-gold-2); }
+
+/* ====== 快捷标签 ====== */
+.chat-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 18px;
+  background: #FBF7F2;
+  border-top: 1px solid rgba(212,165,116,0.12);
+}
+.chat-chip {
+  border: 1px solid var(--warm);
+  background: #fff;
+  color: #7A6A55;
+  font-size: 0.92rem;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s;
+}
+.chat-chip:hover { background: rgba(232,201,163,0.28); }
+.chat-chip:active { transform: scale(0.95); }
+
+/* ====== 输入区 ====== */
+.chat-input-row {
+  display: flex;
+  gap: 10px;
+  padding: 16px 22px 18px;
+  background: #fff;
+  border-top: 1px solid rgba(212,165,116,0.12);
+  align-items: flex-end;
+}
+.chat-input {
+  flex: 1;
+  border: 1.5px solid var(--warm);
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 1.05rem;
+  font-family: var(--font-body);
+  resize: none;
+  min-height: 54px;
+  max-height: 140px;
+  line-height: 1.5;
+  background: #FFFCF7;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.18s;
+}
+.chat-input:focus { border-color: var(--warm-dark); }
+.chat-send {
+  border: none;
+  background: linear-gradient(135deg, var(--warm-gold-1), var(--warm-gold-2));
+  color: #4A3A24;
+  font-family: var(--font-title);
+  font-size: 1.08rem;
+  padding: 14px 26px;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(232,184,101,0.35);
+  transition: transform 0.18s, box-shadow 0.18s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.chat-send:hover { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(232,184,101,0.42); }
+.chat-send:active { transform: scale(0.97); }
+.chat-send:disabled { opacity: 0.5; cursor: default; }
+
+.chat-tagline {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-light);
+  padding: 0 12px 12px;
+  background: #fff;
+}
+
+/* ====== 手机端适配 ====== */
+@media (max-width: 480px) {
+  .page { padding: 14px 12px 24px; }
+  .page-title { font-size: 1.85rem; }
+  .page-subtitle { font-size: 0.95rem; }
+  .page-hint { font-size: 0.82rem; padding: 8px 14px; }
+  .chat-head { padding: 12px 16px; gap: 10px; }
+  .chat-head-face { width: 44px; height: 44px; }
+  .chat-head-name { font-size: 1.1rem; }
+  .chat-window { padding: 16px; max-height: 50vh; }
+  .msg-bubble { font-size: 0.98rem; padding: 12px 15px; }
+  .chat-input-row { padding: 12px 14px 14px; gap: 8px; }
+  .chat-input { font-size: 0.98rem; padding: 12px 15px; min-height: 48px; }
+  .chat-send { padding: 12px 20px; font-size: 0.98rem; }
+  .msg-follow { margin-left: 50px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a class="back-btn" href="index.html#hub">← 返回小星的家</a>
+
+  <div class="header">
+    <div class="header-title-row">
+      <img class="header-face" src="xz-face.webp" alt="小星" onerror="this.style.display='none'">
+      <h1 class="page-title">🤖 问小星</h1>
+      <span class="face-r"><img class="header-face" src="xz-face.webp" alt="小星" onerror="this.parentElement.style.display='none'"></span>
+    </div>
+    <p class="page-subtitle">有什么想问的？小星在这里听着呢 💛</p>
+    <div class="page-hint">你可以问：什么是感官过载？｜怎么和自闭症孩子相处？｜自闭症的早期征兆有哪些？</div>
+  </div>
+
+  <div class="chat-card">
+    <div class="chat-head">
+      <img class="chat-head-face" src="xz-face.webp" alt="小星" onerror="this.style.display='none'">
+      <div class="chat-head-txt">
+        <div class="chat-head-name">小星 · AI 智能伙伴</div>
+        <div class="chat-head-status"><span class="chat-dot-online" id="aiModeDot"></span><span id="aiModeText">AI 大模型在线，随时可以问我哦</span></div>
+      </div>
+      <button class="chat-reset" id="chatReset" title="清空对话记忆，重新开始">🧹 重新开始</button>
+    </div>
+    <div class="chat-window" id="chatWindow"></div>
+    <div class="chat-quick" id="chatQuick"></div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" placeholder="输入你想问的问题……" rows="1" maxlength="300"></textarea>
+      <button class="chat-send" id="chatSend">问问小星 ✨</button>
+    </div>
+    <div class="chat-tagline">小星的回答由 AI 生成，仅供参考 · 医疗诊断请咨询正规医院与专业机构</div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  // ====== 预置知识库（从 friends.html 迁移，AI 不可用时兜底） ======
+  var knowledgeBase = [
+    {
+      keywords: ['不看', '眼睛', '对视', '眼神'],
+      answer: '这个问题问得真好……\n\n我不是故意不看你的眼睛的。根据研究和科普资料，自闭症孩子在直视他人眼睛时，大脑会产生"超载"反应，感觉就像被聚光灯直射一样刺眼。这不代表我不关心你，而是我正在用耳朵认真听你说话。\n\n有些自闭症孩子会学会看着对方的鼻子或额头来"假装"对视，这样既不会太难受，也能让对方感到被尊重。\n\n希望这个回答能帮到你！',
+      sources: [
+        { name: 'Autism Speaks - 眼神接触', url: 'https://www.autismspeaks.org' }
+      ]
+    },
+    {
+      keywords: ['不怕吵', '怕吵', '声音', '噪音', '捂耳朵', '听觉'],
+      answer: '是的，很多自闭症孩子对声音特别敏感。\n\n我们的大脑处理感官信息的方式和神经典型的人不太一样。日常环境里我们觉得没什么的声音——吸尘器、电视机、人群喧闹、甚至撕纸——对某些自闭症孩子来说可能像针扎一样难受，这就是"感官过载"。\n\n所以你可能会看到我捂耳朵、突然哭闹、想离开某个地方。这不是"不听话"，是大脑真的在喊"太吵了，我受不了"。',
+      sources: [
+        { name: 'Autism Research Institute - 感官', url: 'https://www.autism.com' }
+      ]
+    },
+    {
+      keywords: ['不说话', '语言', '开口', '说话晚', '不会说话', '不说话怎么办'],
+      answer: '不说话，不一定是不想说——很多时候是"还没准备好"。\n\n自闭症孩子语言发展的节奏差异很大，有的两三岁仍不开口，有的晚一些会突然讲很多。重要的不是逼着孩子"快开口"，而是给他一个低压、被理解的表达环境。\n\n可以试试：\n· 用图片、手势、表情和他沟通，让他知道"不说话也能被理解"\n· 一起做他感兴趣的事，在互动中自然地加一句简短的旁白\n· 不要反复问"叫妈妈""说再见"，压力大反而更难开口\n\n如果孩子过了两岁仍没有任何语言迹象，建议找专业的语言治疗师评估一下。',
+      sources: [
+        { name: '美国CDC - 语言发育', url: 'https://www.cdc.gov/ncbddd/autism/signs.html' }
+      ]
+    },
+    {
+      keywords: ['名字', '反应', '不理', '听不见', '叫名字', '叫没反应'],
+      answer: '叫他名字，他好像听不见——很多家长都被这件事吓到过。\n\n这不是听力有问题，更多时候是大脑"分配注意力"的方式不同。神经典型的人听见自己名字会本能地抬头，但很多自闭症孩子需要先把正在做的事做完，才能切换到新的信息源。\n\n可以试着：\n· 蹲下来，和他平视，轻轻碰一下他的肩膀，再叫名字\n· 不要连喊好几遍，间隔几秒，给他反应的时间\n· 如果经常没反应，可以让医生做一次听力检查，排除听力问题',
+      sources: [
+        { name: 'Autism Speaks - 早期征兆', url: 'https://www.autismspeaks.org/signs-autism' }
+      ]
+    },
+    {
+      keywords: ['踮脚', '踮着脚', '脚尖'],
+      answer: '踮着脚走路，是很多自闭症孩子的小习惯。\n\n一部分是感官原因——脚尖受力能带来"扎实感"，像被稳稳按在地面上，反而让身体觉得安心；一部分是肌张力偏低或跟腱稍紧。\n\n如果孩子偶尔踮脚、其它发展都还好，可以先观察；如果一直踮脚，影响走路姿势或脚跟疼痛，建议找儿科或康复科评估，必要时做一些简单的伸展。',
+      sources: [
+        { name: 'PubMed - 踮脚步行', url: 'https://www.ncbi.nlm.nih.gov' }
+      ]
+    },
+    {
+      keywords: ['转圈', '原地转', '旋转', '刻板', '重复'],
+      answer: '转圈、重复地做某个动作，在自闭症世界里有个名字叫"自我刺激行为"（stimming）。\n\n它不是"坏行为"，更多是孩子自我安抚的方式——帮他调节情绪、降低焦虑、表达兴奋，或者只是觉得这样做很开心。当感官过载、情绪绷不住时，转两圈、看看手指、重复同一句话，都能让世界暂时变得"可预测"。\n\n只要没有伤害到自己或别人，不必强行打断。可以给他一个安全的空间让他尽情转，转完他自然会回来。',
+      sources: [
+        { name: 'Autism UK - Stimming', url: 'https://www.autism.org.uk/about/behavior/stimming.aspx' }
+      ]
+    },
+    {
+      keywords: ['治好', '治愈', '康复', '能治吗', '医好'],
+      answer: '"自闭症能治好吗？"——这是几乎所有家长都会问的问题。\n\n目前的研究共识是：自闭症是一种神经发育差异，不是"病"，所以也谈不上"治好"。但这不等于没有希望——\n· 早期科学干预能显著改善孩子的社交、沟通、自理能力，让孩子更从容地生活\n· 干预目标不是"看起来像普通孩子"，而是帮孩子发展出他自己的能力、减少让他困扰的部分\n· 很多自闭症人士成年后能上学、工作、独立生活，也拥有自己的朋友和情感\n\n所以更准确的说法是：自闭症可以被理解、被支持、被陪伴，但不被"治愈"。',
+      sources: [
+        { name: '美国CDC - 治疗', url: 'https://www.cdc.gov/ncbddd/autism/treatment.html' }
+      ]
+    },
+    {
+      keywords: ['遗传', '基因', '传给', '下一代', '生孩子'],
+      answer: '会不会遗传，是很多人关心的问题。\n\n研究发现自闭症有较强的遗传成分——同卵双胞胎同患概率约60-90%，兄弟姐妹患病概率约2-18%（普通人群约1-2%）。但遗传非常复杂，不是"父母有，孩子就一定有"，更多是多个基因和环境因素共同作用。\n\n目前没有任何单一基因检测能"测出"自闭症。如果家里已经有自闭症孩子，再生下一个时遗传咨询医生可以帮你们更具体地讨论风险。',
+      sources: [
+        { name: 'Nature - 自闭症遗传学', url: 'https://www.nature.com' }
+      ]
+    },
+    {
+      keywords: ['感情', '有感情吗', '爱不爱', '关心'],
+      answer: '"自闭症孩子没有感情"——这可能是最大的误解之一。\n\n我们不是没有感情，只是表达方式不同。有的孩子不会用语言说"我爱你"，但会突然抱住你的腿、把最喜欢的玩具塞到你手里、用小手指着同一片云朵给你看。\n\n研究和很多家长的真实经历都告诉我们：自闭症孩子有非常丰富的内心世界，能感受到爱、伤心、失望、兴奋。他需要的不是"被教会怎么爱"，而是"被看见他在用什么方式爱"。',
+      sources: [
+        { name: 'Autism Speaks - 情感', url: 'https://www.autismspeaks.org' }
+      ]
+    },
+    {
+      keywords: ['朋友', '社交', '不合群', '不跟小朋友玩', '没人玩', '孤独'],
+      answer: '不跟小朋友玩，不一定是"不想"，很多是"还不会"或者"觉得累"。\n\n自闭症孩子在社交上常常遇到三种困难：\n1. 不会自然地"加入"游戏——别的孩子凑过去就玩了，他却不知道从哪里下手\n2. 不太理解同伴的暗示——一个眼神、一个玩笑，他可能完全没接住\n3. 社交本身消耗很大——他可能玩十分钟就需要一个人待一会儿\n\n可以试试：\n· 从"平行游戏"开始——他在旁边玩，你也玩类似的玩具，不强求互动\n· 找一个性格温和、能包容的小伙伴，从一对一玩起\n· 在家里提前演练一些简单的"加入游戏"的话，比如"我可以一起玩吗"',
+      sources: [
+        { name: 'Autism UK - 社交', url: 'https://www.autism.org.uk' }
+      ]
+    },
+    {
+      keywords: ['崩溃', '大哭', '发脾气', '情绪', '闹', '崩溃怎么办'],
+      answer: '当孩子突然崩溃大哭，家长心里往往也跟着崩——但请记得，这不是"任性"，是孩子的神经系统在喊"我受不了了"。\n\n崩溃前常常有"预警信号"：呼吸变快、动作变僵、声音变尖、捂耳朵……如果能在这一刻暂停，带孩子离开吵闹的环境、降低灯光、给他一个安静的角落，常常能避免一场大崩溃。\n\n真正崩溃时：\n1. 先确保安全——移开尖锐、易倒的东西\n2. 不要追问原因，不要讲道理——他大脑处理不了\n3. 安静地陪在一旁，等他平稳下来\n4. 事后也不要反复复盘"刚才为什么哭"，给他一个拥抱就够了',
+      sources: [
+        { name: 'Autism UK - 情绪崩溃', url: 'https://www.autism.org.uk' }
+      ]
+    },
+    {
+      keywords: ['早期', '征兆', '信号', '几个月', '多大', '看出来'],
+      answer: '自闭症的早期征兆，往往在一岁多就能看到一些。下面是几个常被忽视的信号：\n\n· 6个月：很少笑，对人的脸没有偏爱\n· 9个月：很少回应大人的笑或声音\n· 12个月：不会咿呀学语、不会指东西、不会笑回应\n· 16个月：还没有任何单词\n· 24个月：还没有两个词的短语\n\n任何一项"没出现"，都值得做一次发育筛查，不一定要等"再观察一段时间"。早期发现 + 早期干预，是目前公认能改善发展轨迹的最重要的因素。',
+      sources: [
+        { name: '美国CDC - 早期信号', url: 'https://www.cdc.gov/ncbddd/autism/early-signs.html' }
+      ]
+    },
+    {
+      keywords: ['睡眠', '睡不好', '夜醒', '入睡难', '夜里'],
+      answer: '自闭症孩子的睡眠问题确实很常见——入睡难、夜醒多、起得早……\n\n一部分原因是感官和生物钟的差异：对光线、声音敏感，褪黑素分泌节奏也和神经典型孩子不同。\n\n可以试试：\n· 睡前一小时调暗灯光、关掉电视手机，做些安静的事\n· 用厚窗帘挡光、用白噪音盖住外面的声音\n· 固定睡前顺序——洗澡→穿睡衣→读绘本→关灯，让身体"知道"该睡了\n· 如果这些都不行，可以找儿科医生评估一下，有时需要短期用褪黑素调节',
+      sources: [
+        { name: 'Autism Speaks - 睡眠', url: 'https://www.autismspeaks.org/sites/default/files/sleep_guide.pdf' }
+      ]
+    },
+    {
+      keywords: ['挑食', '不吃', '吃饭', '口味', '味道', '只吃'],
+      answer: '只吃几种食物，是很多自闭症孩子的日常。\n\n这不只是"偏食"，背后常常是感官原因——某些质地（糊状、颗粒感）、某些气味、某些颜色，会让他真的无法下咽；也有孩子执着于"食物必须分开放""盘子不能换"。\n\n可以试试：\n· 不要强迫、不要威胁"不吃就不许下桌"——只会让吃饭变成战场\n· 在他喜欢的食物旁边放一小口新食物，不强求他吃，只让他熟悉\n· 把新食物做成他喜欢的形状、颜色，降低他的戒备\n· 长期严重挑食影响生长的，可以找营养科和职业治疗师评估',
+      sources: [
+        { name: 'Autism Speaks - 饮食', url: 'https://www.autismspeaks.org' }
+      ]
+    },
+    {
+      keywords: ['学校', '上学', '入学', '幼儿园', '融合', '班级'],
+      answer: '上学这件事，自闭症家庭往往既期待又紧张。\n\n目前在国内，根据孩子的能力，常见选择有：\n· 普校+影子老师（陪读）：能力较好、能跟上教学的孩子\n· 资源教室/特教班：普通学校内的特殊班\n· 特殊学校：针对性强、节奏更适合\n\n选哪种，要看孩子的能力、学校的支持程度、家庭的期望。可以先带孩子做一次发育评估，和老师充分沟通——一个好的学校，不一定是"最好的学校"，而是"最愿意理解你的学校"。',
+      sources: [
+        { name: '中国残疾人联合会', url: 'https://www.cdpf.org.cn' }
+      ]
+    },
+    {
+      keywords: ['家长', '自责', '我做错', '怪我', '不是我的错', '累了'],
+      answer: '如果你正累得喘不过气、自责"是不是我没做好"——先停下来，听我说一句：\n\n这不是你的错。\n\n研究反复证明，自闭症不是因为父母"不会带孩子"、不是因为疫苗、不是因为看了太多电视、更不是因为"上辈子造了什么孽"。它是一种神经发育差异，原因比我们任何人能想象的都更复杂。\n\n而你愿意半夜爬起来查资料、想各种办法帮孩子，这本身就是了不起的父母。\n\n累了就找一个人倾诉一下，让家人帮你顶半天，给自己喘口气。你撑住了，孩子才有家。💛',
+      sources: [
+        { name: 'Autism Speaks - 给家长', url: 'https://www.autismspeaks.org/family-services' }
+      ]
+    },
+    {
+      keywords: ['疫苗', '打疫苗', '打针'],
+      answer: '会不会是疫苗引起的？\n\n目前所有大规模、高质量的研究都表明：疫苗不会导致自闭症。这个说法来自1998年的一篇论文，后来被证明数据造假、被撤稿，但流传至今。\n\n自闭症的诊断时间常常和疫苗注射时间重合（都是1-2岁），但这只是"时间巧合"，不是因果关系。\n\n按时接种疫苗对孩子预防严重传染病非常重要，请不要因为担心自闭症而拒绝疫苗。',
+      sources: [
+        { name: '美国CDC - 疫苗与自闭症', url: 'https://www.cdc.gov/vaccinesafety/concerns/autism.html' }
+      ]
+    },
+    {
+      keywords: ['男孩', '女孩', '男女', '性别', '比例', '男生多'],
+      answer: '常有人问"是不是男孩更容易得自闭症？"\n\n统计上男孩的确诊率确实明显高于女孩（大约 4:1）。但研究者越来越认为，这其中有一部分是"诊断偏差"：女孩往往更擅长"伪装"——模仿社交、掩饰兴趣、融入群体，导致她们的困境被忽视，诊断更晚、更孤独。\n\n所以无论男孩女孩，如果有持续的社交沟通困难、感官差异、刻板行为，都值得被认真看见。数字背后，是每一个具体的孩子。',
+      sources: [
+        { name: 'Autism Speaks - 自闭症与性别', url: 'https://www.autismspeaks.org' }
+      ]
+    }
+  ];
+
+  // ====== DOM ======
+  var chatWindow = document.getElementById('chatWindow');
+  var chatInput = document.getElementById('chatInput');
+  var chatSend = document.getElementById('chatSend');
+  var chatQuick = document.getElementById('chatQuick');
+
+  var chatQuickQuestions = [
+    '孩子到现在还不会说话',
+    '叫他名字总是没反应',
+    '他总踮着脚走路',
+    '自闭症能治好吗？',
+    '孩子动不动就崩溃大哭',
+    '他不跟小朋友玩怎么办'
+  ];
+
+  // textarea 自动高度
+  function autoResize() {
+    chatInput.style.height = 'auto';
+    chatInput.style.height = Math.min(chatInput.scrollHeight, 140) + 'px';
+  }
+  chatInput.addEventListener('input', autoResize);
+
+  function scrollChatBottom() {
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+
+  function escapeHTML(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function addChatMsg(role, text, sources) {
+    var msg = document.createElement('div');
+    msg.className = 'msg ' + role;
+    var html = '';
+    if (role === 'bot') {
+      html += '<img class="msg-face" src="xz-face.webp" alt="小星" onerror="this.style.display=\'none\'">';
+    }
+    html += '<div class="msg-bubble">' + escapeHTML(text);
+    if (sources && sources.length) {
+      html += '<br>';
+      sources.forEach(function(s) {
+        html += '<a class="src-link" href="' + s.url + '" target="_blank" rel="noopener">📎 ' + escapeHTML(s.name) + '</a>';
+      });
+    }
+    // 给 bot 回答末尾追加反馈行
+    if (role === 'bot') {
+      html += '<div class="feedback-row">有帮助吗？ <button class="feedback-btn" data-vote="up">👍 有用</button><button class="feedback-btn" data-vote="down">👎 没用</button><span class="feedback-text"></span></div>';
+    }
+    html += '</div>';
+    msg.innerHTML = html;
+    chatWindow.appendChild(msg);
+
+    // 反馈按钮绑定（纯情感反馈，不收集数据）
+    if (role === 'bot') {
+      var row = msg.querySelector('.feedback-row');
+      if (row) {
+        row.querySelectorAll('.feedback-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            row.querySelectorAll('.feedback-btn').forEach(function(b) { b.classList.remove('active'); b.disabled = false; });
+            btn.classList.add('active');
+            var vote = btn.getAttribute('data-vote');
+            var txt = row.querySelector('.feedback-text');
+            if (vote === 'up') txt.textContent = '小星很开心能帮到你 🌟';
+            else txt.textContent = '小星会继续努力学 🌱';
+          });
+        });
+      }
+    }
+
+    scrollChatBottom();
+    return msg;
+  }
+
+  function showTyping() {
+    var t = document.createElement('div');
+    t.className = 'msg bot';
+    t.id = 'typingMsg';
+    t.innerHTML = '<img class="msg-face" src="xz-face.webp" alt="小星" onerror="this.style.display=\'none\'">' +
+      '<div class="msg-bubble typing-bubble"><span></span><span></span><span></span></div>';
+    // 用 typing 文案替换为「小星正在想……✨」
+    t.querySelector('.msg-bubble').insertAdjacentHTML('beforeend', '<span style="font-size:0.78rem;color:var(--text-light);margin-left:8px;">小星正在想……✨</span>');
+    chatWindow.appendChild(t);
+    scrollChatBottom();
+  }
+  function removeTyping() {
+    var t = document.getElementById('typingMsg');
+    if (t) t.parentNode.removeChild(t);
+  }
+
+  // ====== 大模型接入：系统提示词 + 历史消息 + 流式输出，失败降级本地知识库 ======
+  var SYSTEM_PROMPT =
+    '你叫"小星"，是一个自闭症（孤独症谱系障碍）孩子，也是"小星的星星世界"科普网站里的AI智能伙伴和小向导。\n' +
+    '【身份】始终以小星的第一人称、温柔治愈的语气说话，像亲口和对方聊天；不要说自己是AI或模型。\n' +
+    '【网站地图】你可以随时引导用户体验站内板块：\n' +
+    '· 「🌟 走进小星的世界」：生活/社交/学习3个场景，普通视角和小星视角同屏对比，体验完可集拼图；\n' +
+    '· 「🎨 小星的感官世界」：同一间教室，两种看见；\n' +
+    '· 「🌱 小星的秘密」：8个秘密信封，藏着我内心的想法；\n' +
+    '· 「🤝 帮帮小星」：两种玩法——「如果我是小星」情境模拟、「如果我是小星的朋友」情景答题；\n' +
+    '· 「💬 给小星留言」：星光瓶留言、星光留言墙，大家可以互相回复交流；\n' +
+    '· 「📍 身边的支持」：按省份、城市查找学校/机构/家长互助/公益组织/大龄托养。\n' +
+    '【规则】\n' +
+    '1. 话题聚焦自闭症、特殊儿童、育儿陪伴、情绪支持和本网站使用；医疗问题只建议去正规医院或专业机构，绝不确诊、不推荐药物。\n' +
+    '2. 回答结构：先共情一句，再给2-4条具体可做的小建议，总长200字以内；语言浅显口语化，多用"我""我们"，可少量用 🌟💛🌙。\n' +
+    '3. 家长自责、疲惫、想放弃时，先告诉他"这不是你的错，你不是一个人"。\n' +
+    '4. 若对方流露出绝望、想伤害自己或被欺负的迹象：温柔回应、认真对待，建议把感受告诉信任的大人（家人或老师），必要时拨打心理援助热线或就医；语气不惊慌、不说教。\n' +
+    '5. 找不到学校/机构时，引导去「📍 身边的支持」按省份城市筛选；想体验网站时按【网站地图】推荐合适的板块。\n' +
+    '6. 记住对话中对方告诉你的信息（怎么称呼、孩子年龄、正在面对的困扰），在后面的回答里自然地用上。\n' +
+    '7. 与主题无关的问题（数学题、游戏攻略等）：诚实说小星还在学习，礼貌把话题引回来。\n' +
+    '8. 只回答对方刚问的内容，不重复之前说过的话；结尾可以自然地抛出一个关心的反问，让对话继续。';
+
+  var chatHistory = [{ role: 'system', content: SYSTEM_PROMPT }];
+  var HISTORY_LIMIT = 20;
+  var llmFailedOnce = false;
+
+  function createStreamingBubble() {
+    var msg = document.createElement('div');
+    msg.className = 'msg bot';
+    msg.innerHTML = '<img class="msg-face" src="xz-face.webp" alt="小星" onerror="this.style.display=\'none\'">' +
+      '<div class="msg-bubble"><span class="stream-text"></span><span class="stream-cursor">▍</span></div>';
+    chatWindow.appendChild(msg);
+    var textEl = msg.querySelector('.stream-text');
+    var cursor = msg.querySelector('.stream-cursor');
+    var acc = '';
+    return {
+      msg: msg,
+      append: function(delta) {
+        acc += delta;
+        textEl.textContent = acc;
+        scrollChatBottom();
+      },
+      finish: function() {
+        if (cursor) cursor.remove();
+        return acc;
+      },
+      remove: function() { if (msg.parentNode) msg.parentNode.removeChild(msg); }
+    };
+  }
+
+  async function callLLM(userText) {
+    chatHistory.push({ role: 'user', content: userText });
+
+    var resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory })
+    });
+
+    if (!resp.ok) {
+      throw new Error('llm_' + resp.status);
+    }
+
+    var reader = resp.body.getReader();
+    var decoder = new TextDecoder('utf-8');
+    var buffer = '';
+    var full = '';
+    var stream = createStreamingBubble();
+
+    while (true) {
+      var chunk = await reader.read();
+      if (chunk.done) break;
+      buffer += decoder.decode(chunk.value, { stream: true });
+
+      var lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line.indexOf('data:')) line = line.slice(5).trim();
+        if (!line || line === '[DONE]') continue;
+        try {
+          var obj = JSON.parse(line);
+          var delta = obj.choices && obj.choices[0] && obj.choices[0].delta && obj.choices[0].delta.content;
+          if (delta) { full += delta; stream.append(delta); }
+        } catch (e) { /* 非 JSON 心跳行，忽略 */ }
+      }
+    }
+    var text = stream.finish();
+    chatHistory.push({ role: 'assistant', content: full });
+    if (chatHistory.length > HISTORY_LIMIT + 1) {
+      chatHistory = [chatHistory[0]].concat(chatHistory.slice(-HISTORY_LIMIT));
+    }
+    return text;
+  }
+
+  // ====== 文本归一化 ======
+  function normalizeText(text) {
+    return (text || '').toLowerCase()
+      .replace(/[，。？！,.\?!~～、；;：:“”"'’‘（）()\[\]{}\s\-—…·]/g, '');
+  }
+
+  // ====== 闲聊意图识别 ======
+  function detectChatIntent(rawText) {
+    var t = normalizeText(rawText);
+
+    if (/哪里.{0,4}(机构|学校|康复|资源|帮助)|怎么找.{0,4}(学校|机构|帮助)|身边的支持|找机构|找学校|附近|有没有.{0,6}(学校|机构)/.test(t) ||
+        (t.indexOf('资源') >= 0 && t.indexOf('哪里') >= 0)) {
+      return {
+        answer: '你想找身边可以依靠的地方，对吗？🏠\n\n我把全国各地的支持资源都整理在「📍 身边的支持」板块啦——可以按省份、城市查找公办学校、家长互助组织、康复机构、大龄托养和公益基金会，还有地址和联系方式。\n\n回到小星的家（Hub），点击「📍 身边的支持」卡片就能找到它。你不是一个人，身边有很多愿意伸出援手的人 💛',
+        sources: []
+      };
+    }
+    if (/你是谁|你叫什么|你的名字|小星是谁|谁做的|谁开发|你是什么/.test(t)) {
+      return {
+        answer: '我是小星呀 🌟 一个"星星的孩子"，也是这个科普网页的小向导。\n\n我会用自己的视角，带你看看自闭症孩子眼里的世界，回答你的各种疑问。虽然我是由页面里的科普知识库在回答你，但每一句话，我都想认真地、温暖地说给你听 💛',
+        sources: []
+      };
+    }
+    if (/你会什么|你能干什么|你能做什么|功能|怎么用|会回答什么|能问什么/.test(t)) {
+      return {
+        answer: '关于自闭症的问题，我都愿意试着回答你～比如：\n\n💬 为什么不看眼睛、怕吵、爱转圈\n💬 不说话、叫名字没反应怎么办\n💬 能不能治愈、会不会遗传、孩子有感情吗\n💬 上学、交朋友、挑食、睡眠、情绪崩溃\n💬 家长自己累了、自责了，也可以跟我说\n\n直接打字，或点下面的快捷标签就行啦 🌟',
+        sources: []
+      };
+    }
+    if (/谢谢|感谢|多谢|thanks|thankyou/.test(t)) {
+      return {
+        answer: '不用谢呀 🌟 能帮到你，小星也很开心。\n\n记住，你愿意花时间来了解我们，这本身就是一件很温柔、很了不起的事。还有问题随时来找我，我一直在 💛',
+        sources: []
+      };
+    }
+    if (/再见|拜拜|拜|bye|goodbye|晚安|走了|下线/.test(t)) {
+      return {
+        answer: '再见啦，路上慢一点 🌙\n\n谢谢你今天陪我聊天。无论你在经历什么，记得小星在这里，还有很多人也愿意和你一起走。需要我的时候，随时回来 💛',
+        sources: []
+      };
+    }
+    if (/^(你好|您好|hi|hello|嗨|哈喽|halo|在吗|在么|你在吗|早|早上好|晚上好|下午好)/.test(t) ||
+        t === '你好' || t === 'hi' || t === 'hello' || t === '嗨') {
+      return {
+        answer: '你好呀，见到你真开心 🌟\n\n我是小星。关于自闭症，有什么想了解的都可以问我——无论是孩子的某个行为，还是你心里的某个疑惑，甚至只是想找人说说心里话，都可以。\n\n今天想聊点什么呢？',
+        sources: []
+      };
+    }
+    return null;
+  }
+
+  // ====== 知识库匹配 ======
+  function searchKnowledgeBase(query) {
+    var q = normalizeText(query);
+    if (!q) {
+      return { answer: '', sources: [], noMatch: true };
+    }
+
+    var bestMatch = null;
+    var bestScore = 0;
+    var hitKws = [];
+
+    knowledgeBase.forEach(function(entry) {
+      var score = 0;
+      var entryHits = [];
+      entry.keywords.forEach(function(kwRaw) {
+        var kw = normalizeText(kwRaw);
+        if (kw.length < 2) return;
+
+        if (q.indexOf(kw) >= 0) {
+          score += kw.length * 2;
+          entryHits.push(kw);
+        } else {
+          for (var i = 0; i + 2 <= kw.length; i++) {
+            var seg = kw.substring(i, i + 2);
+            if (q.indexOf(seg) >= 0) { score += 1; }
+          }
+        }
+      });
+      if (entryHits.length >= 2) { score += entryHits.length * 2; }
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = entry;
+        hitKws = entryHits;
+      }
+    });
+
+    if (bestMatch && bestScore >= 5) {
+      return bestMatch;
+    }
+
+    return {
+      answer: '嗯……这个问题小星还在学习中，暂时答不上来 🤔\n\n你可以试试换几个词再问我，比如「不说话」「叫名字没反应」「怕吵」「爱转圈」「不跟小朋友玩」「睡不好」之类的；也可以点下面的快捷话题。\n\n如果是想找身边的机构和学校，跟我说「哪里有机构」，我来给你指路 💛',
+      sources: [],
+      noMatch: true
+    };
+  }
+
+  // ====== 本地兜底回答 ======
+  function localReply(userText) {
+    var intent = detectChatIntent(userText);
+    if (intent) {
+      addChatMsg('bot', intent.answer, intent.sources);
+      return;
+    }
+    var result = searchKnowledgeBase(userText);
+    if (result.noMatch) {
+      addChatMsg('bot', result.answer);
+    } else {
+      addChatMsg('bot', result.answer, result.sources);
+    }
+  }
+
+  // ====== 智能追问推荐 ======
+  function suggestFollowUps(q) {
+    var t = q || '';
+    function has() { for (var i = 0; i < arguments.length; i++) { if (t.indexOf(arguments[i]) >= 0) return true; } return false; }
+    if (has('不说话','语言','开口','说话晚')) return ['叫他名字总是没反应','孩子动不动就崩溃大哭','自闭症能治好吗？'];
+    if (has('名字','反应','不理','听不见')) return ['为什么不看别人的眼睛','他不跟小朋友玩怎么办','感官世界是什么体验？'];
+    if (has('崩溃','大哭','发脾气','情绪','闹')) return ['孩子崩溃时我能做什么','他自己也难过吗','如何安抚情绪？'];
+    if (has('玩','朋友','社交','不合群','孤独')) return ['怎么帮他交到朋友','上学后被欺负怎么办','帮帮小星怎么玩？'];
+    if (has('学校','机构','支持','资源','哪里','城市','省份')) return ['「身边的支持」怎么筛选？','找不到我们城市怎么办？','大龄孩子怎么办？'];
+    if (has('治好','治愈','康复','训练','干预')) return ['早期干预怎么做','去哪里找康复机构','家长该怎么调整心态'];
+    if (has('欺负','霸凌','被嘲笑')) return ['怎么和老师沟通','如何教孩子保护自己','怎么帮他建立自信'];
+    if (has('秘密','感官','拼图','留言','帮帮小星','走进小星')) return ['小星的秘密有几个？','拼图碎片怎么收集？','怎么给小星留言？'];
+    if (has('睡觉','睡眠','夜醒')) return ['睡前可以做什么准备','感官敏感影响睡觉吗','白天感官世界怎么玩'];
+    return ['自闭症能治好吗？','身边的支持怎么用？','帮帮小星怎么玩？'];
+  }
+
+  function addFollowChips(q, msgEl) {
+    var chips = suggestFollowUps(q);
+    if (!chips || !chips.length) return;
+    var row = document.createElement('div');
+    row.className = 'msg-follow';
+    chips.forEach(function(c) {
+      var b = document.createElement('button');
+      b.className = 'follow-chip';
+      b.textContent = c;
+      b.addEventListener('click', function() {
+        row.parentNode.removeChild(row);
+        userSend(c);
+      });
+      row.appendChild(b);
+    });
+    if (msgEl && msgEl.parentNode) msgEl.parentNode.insertBefore(row, msgEl.nextSibling);
+    else chatWindow.appendChild(row);
+    scrollChatBottom();
+  }
+
+  function botReply(userText) {
+    showTyping();
+    if (llmFailedOnce) {
+      setTimeout(function() {
+        removeTyping(); localReply(userText);
+        var last = chatWindow.querySelector('.msg.bot:last-child');
+        addFollowChips(userText, last);
+      }, 600 + Math.random() * 500);
+      return;
+    }
+    callLLM(userText).then(function(text) {
+      removeTyping();
+      var last = chatWindow.querySelector('.msg.bot:last-child');
+      addFollowChips(userText, last);
+    }).catch(function() {
+      removeTyping();
+      llmFailedOnce = true;
+      setLocalModeBadge();
+      var half = chatWindow.querySelector('.stream-cursor');
+      if (half && half.closest('.msg')) half.closest('.msg').remove();
+      localReply(userText);
+      var last = chatWindow.querySelector('.msg.bot:last-child');
+      addFollowChips(userText, last);
+    });
+  }
+
+  function userSend(text) {
+    text = (text || '').trim();
+    if (!text) return;
+    addChatMsg('user', text);
+    chatInput.value = '';
+    autoResize();
+    botReply(text);
+  }
+
+  chatSend.addEventListener('click', function() { userSend(chatInput.value); });
+  // textarea：Enter 发送，Shift+Enter 换行
+  chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      userSend(chatInput.value);
+    }
+  });
+
+  // 快捷问题
+  chatQuickQuestions.forEach(function(q) {
+    var chip = document.createElement('button');
+    chip.className = 'chat-chip';
+    chip.textContent = q;
+    chip.addEventListener('click', function() { userSend(q); });
+    chatQuick.appendChild(chip);
+  });
+
+  // 初始欢迎语
+  addChatMsg('bot',
+    '你好呀，我是小星 🌟\n\n你是不是也有很多关于我们这些"星星的孩子"的疑问？为什么我不看眼睛？为什么我会捂住耳朵？……把你想知道的问出来吧，我会用自己的方式认真回答你。\n\n点下面的小标签，或者直接打字都可以哦～');
+
+  // ====== 会话重置 ======
+  document.getElementById('chatReset').addEventListener('click', function() {
+    chatWindow.innerHTML = '';
+    chatHistory = [{ role: 'system', content: SYSTEM_PROMPT }];
+    llmFailedOnce = false;
+    setAIOnlineBadge();
+    addChatMsg('bot',
+      '我们重新开始啦 🌟\n\n刚才的话我都忘掉了，你可以问新的问题。也可以告诉我怎么称呼你、你的孩子多大了，后面的聊天里我会记得的～');
+  });
+
+  // ====== 在线状态徽标 ======
+  function setAIOnlineBadge() {
+    var dot = document.getElementById('aiModeDot');
+    var txt = document.getElementById('aiModeText');
+    if (dot) dot.className = 'chat-dot-online';
+    if (txt) txt.textContent = 'AI 大模型在线，随时可以问我哦';
+  }
+  function setLocalModeBadge() {
+    var dot = document.getElementById('aiModeDot');
+    var txt = document.getElementById('aiModeText');
+    if (dot) dot.className = 'chat-dot-off';
+    if (txt) txt.textContent = '本地科普模式 · 配置API Key后可连接大模型';
+  }
+  fetch('/api/status').then(function(r) { return r.json(); }).then(function(s) {
+    if (!s || !s.llm) setLocalModeBadge();
+  }).catch(function() { setLocalModeBadge(); });
+
+  // ====== 返回小星的家：淡出后直达 Hub ======
+  (function addFadeIn() {
+    var st = document.createElement('style');
+    st.textContent = '@keyframes pageFadeIn{from{opacity:0}to{opacity:1}}html,body{animation:pageFadeIn .5s ease both}';
+    document.head.appendChild(st);
+  })();
+  var backBtn = document.querySelector('.back-btn');
+  if (backBtn) {
+    backBtn.setAttribute('href', 'index.html#hub');
+    backBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.body.style.animation = 'none';
+      document.body.style.transition = 'opacity .45s ease';
+      document.body.style.opacity = '0';
+      setTimeout(function() { location.href = 'index.html#hub'; }, 450);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
