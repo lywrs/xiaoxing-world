@@ -3785,6 +3785,7 @@ html, body {
       <div class="pz-bubble" id="pzText"></div>
       <div class="pz-modal-btns">
         <button class="we-btn solid" id="pzClaim">领取碎片 🧩</button>
+        <button class="we-btn ghost" id="pzWhy">了解原因 💡</button>
         <button class="we-btn ghost" id="pzAlt">继续</button>
         <button class="we-btn modal-home" id="pzToList">📋 返回场景列表</button>
       </div>
@@ -4662,7 +4663,7 @@ html, body {
     life: { title: '生活场景', enabled: true, why: true, frames: [
       { n: { img: 'ws-life-1.webp', title: '', t: '清晨阳光明媚 天气真好呀 妈妈来给我穿衣服了' },
         s: { img: 'ws-life-s1.webp', title: '', t: '清晨醒来，这件毛衣递到我的面前。毛线粗糙扎人，凸起的毛边触碰皮肤时，一阵阵刺痒会持续传来。别人觉得普通舒服的衣服，于我而言，每一寸布料都在刺激我的皮肤，这种难受很难用语言说清楚。' } },
-      { n: { img: 'ws-life-2.webp', title: '', t: '穿好衣服 我来到卧室刷牙洗漱 开启新的一天~' },
+      { n: { img: 'ws-life-2.jpg', title: '', t: '穿好衣服 我来到卧室刷牙洗漱 开启新的一天~' },
         s: { img: 'ws-life-s2.webp', title: '', t: '洗漱间到处都是混杂的味道，牙膏、洗护用品的气味像一团浓雾包围住我。旁人几乎察觉不到的气味，在我的感知里被无限放大，刺鼻的气息让我胸闷烦躁，只想逃离这个空间。' } },
       { n: { img: 'ws-life-4.webp', title: '', t: '美好的一天结束了，我要躺在我的小床上睡觉啦' },
         s: { img: 'ws-life-s3.webp', title: '', t: '四下安静的夜里，闹钟“滴答、滴答”的声响格外清晰。这微弱的声音在我的世界里不断放大，仿佛阵阵惊雷不停敲打，没有办法忽略。持续不断的噪声，让我紧绷焦虑，难以平静下来。' } }
@@ -5028,10 +5029,13 @@ html, body {
     const body = modal.querySelector('.we-why-body');
     if (body) body.scrollTop = 0;
   });
-  // 我明白了，返回：科普弹窗 → 回到完成弹窗（三个场景共用）
+  // 我明白了，返回：关闭科普弹窗 → 回到场景选择页（完成弹窗已被通关弹窗 pzModal 取代）
   function wsWhyBack() {
     wsHideWhy();
-    worldDoneModal.classList.add('show');
+    wsTeardownVideo();
+    wsRefreshCards();
+    pzRefresh();
+    showView(worldSelView);
   }
   document.getElementById('worldWhyBack').addEventListener('click', wsWhyBack);
   document.getElementById('worldWhyBackS').addEventListener('click', wsWhyBack);
@@ -5095,6 +5099,9 @@ html, body {
     pzCurrentIsNew = !!isNew;
     document.getElementById('pzText').textContent = PZ_TALK[sceneKey];
     document.getElementById('pzAlt').textContent = sceneKey === 'study' ? '查看完整拼图 ✨' : '继续';
+    // 显隐「了解原因 💡」按钮：仅当场景配置了 why 内容时显示
+    const pzWhyBtn = document.getElementById('pzWhy');
+    if (pzWhyBtn) pzWhyBtn.classList.toggle('hidden', !WORLD_SCENES[sceneKey].why);
     pzModal.classList.add('show');
   }
   // 碎片从弹窗位置飞向 Hub 拼图框（0.8s 弧线轨迹）
@@ -5177,6 +5184,14 @@ html, body {
       pzRefresh();
       showView(worldSelView);
     }
+  });
+  // 「了解原因 💡」：关闭通关弹窗 → 打开当前场景对应的科普弹窗
+  document.getElementById('pzWhy').addEventListener('click', function() {
+    pzModal.classList.remove('show');
+    const modal = WS_WHY_MODALS[wsSceneKey] || worldWhyModal;
+    modal.classList.add('show');
+    const body = modal.querySelector('.we-why-body');
+    if (body) body.scrollTop = 0;
   });
   // 通关弹窗「返回场景列表」：回到场景选择页（不触发碎片飞行）
   document.getElementById('pzToList').addEventListener('click', function() {
