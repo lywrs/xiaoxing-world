@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/api/chat", "destination": "/api/chat" },
+    { "source": "/api/status", "destination": "/api/status" }
+  ]
+}
