@@ -5036,6 +5036,7 @@ html, body {
     wsRefreshCards();
     pzRefresh();
     showView(worldSelView);
+    pzMaybeFly();
   }
   document.getElementById('worldWhyBack').addEventListener('click', wsWhyBack);
   document.getElementById('worldWhyBackS').addEventListener('click', wsWhyBack);
@@ -5062,6 +5063,7 @@ html, body {
   let pzCurrent = null;      // 当前弹窗对应的碎片 key（'piece1'…）
   let pzCurrentIsNew = false; // 本次弹窗是否为新获得的碎片（重复完成不重复飞行动画）
   let pzPendingFly = null;   // 待飞行落位的碎片 key（落位前拼图框保持灰色）
+  let pzPendingFlyInfo = null; // 用户点了「领取碎片」但未立即飞：暂存 {pieceN, fromX, fromY}，离开弹窗时触发
 
   function pzState() {
     try { return JSON.parse(localStorage.getItem(PZ_KEY)) || {}; } catch (e) { return {}; }
@@ -5099,6 +5101,14 @@ html, body {
     pzCurrentIsNew = !!isNew;
     document.getElementById('pzText').textContent = PZ_TALK[sceneKey];
     document.getElementById('pzAlt').textContent = sceneKey === 'study' ? '查看完整拼图 ✨' : '继续';
+    // 重置「领取碎片」按钮为可点击的初始状态
+    const pzClaimBtn = document.getElementById('pzClaim');
+    if (pzClaimBtn) {
+      pzClaimBtn.textContent = isNew ? '领取碎片 🧩' : '已领取 ✓';
+      pzClaimBtn.disabled = !isNew;
+      pzClaimBtn.style.opacity = isNew ? '' : '0.55';
+      pzClaimBtn.style.cursor = isNew ? '' : 'default';
+    }
     // 显隐「了解原因 💡」按钮：仅当场景配置了 why 内容时显示
     const pzWhyBtn = document.getElementById('pzWhy');
     if (pzWhyBtn) pzWhyBtn.classList.toggle('hidden', !WORLD_SCENES[sceneKey].why);
@@ -5147,28 +5157,33 @@ html, body {
     toast.classList.add('show');
     setTimeout(function() { toast.classList.remove('show'); }, 2600);
   }
-  // 领取碎片：关弹窗 → 回场景选择页；新碎片飞入拼图框，重复领取直接返回
+  // 领取碎片：留在弹窗内不跳转，等用户后续点「了解原因/继续/返回」时再触发飞行
   document.getElementById('pzClaim').addEventListener('click', function() {
     if (!pzCurrent) return;
     const pieceN = Number(pzCurrent.replace('piece', ''));
     const isNew = pzCurrentIsNew;
-    let fromX = 0, fromY = 0;
+    const btn = document.getElementById('pzClaim');
     if (isNew) {
+      // 暂存飞行起点（弹窗当前位置），等离开弹窗回到场景选择页时再触发飞行
       const card = document.getElementById('pzCard').getBoundingClientRect();
-      fromX = card.left + card.width / 2;
-      fromY = card.top + card.height / 2;
-    }
-    pzCurrentIsNew = false;
-    pzModal.classList.remove('show');
-    pzCurrent = null;
-    wsRefreshCards();
-    pzRefresh();
-    showView(worldSelView);
-    if (isNew) {
       pzPendingFly = 'piece' + pieceN;
-      setTimeout(function() { pzFly(pieceN, fromX, fromY); }, 620);
+      pzPendingFlyInfo = { pieceN: pieceN, fromX: card.left + card.width / 2, fromY: card.top + card.height / 2 };
+      pzCurrentIsNew = false;
     }
+    // 按钮变「已领取 ✓」禁用，不关弹窗，不切换 view
+    btn.textContent = '已领取 ✓';
+    btn.disabled = true;
+    btn.style.opacity = '0.55';
+    btn.style.cursor = 'default';
   });
+  // 工具：离开弹窗时触发待飞行的碎片（被 pzAlt/pzToList/wsWhyBack 调用）
+  function pzMaybeFly() {
+    if (pzPendingFlyInfo) {
+      const info = pzPendingFlyInfo;
+      pzPendingFlyInfo = null;
+      setTimeout(function() { pzFly(info.pieceN, info.fromX, info.fromY); }, 620);
+    }
+  }
   // 继续 → 留在场景选择页；查看完整拼图 → 打开完整画面
   document.getElementById('pzAlt').addEventListener('click', function() {
     pzModal.classList.remove('show');
@@ -5184,8 +5199,9 @@ html, body {
       pzRefresh();
       showView(worldSelView);
     }
+    pzMaybeFly();
   });
-  // 「了解原因 💡」：关闭通关弹窗 → 打开当前场景对应的科普弹窗
+  // 「了解原因 💡」：关闭通关弹窗 → 打开当前场景对应的科普弹窗（不切 view，飞行暂缓）
   document.getElementById('pzWhy').addEventListener('click', function() {
     pzModal.classList.remove('show');
     const modal = WS_WHY_MODALS[wsSceneKey] || worldWhyModal;
@@ -5193,13 +5209,14 @@ html, body {
     const body = modal.querySelector('.we-why-body');
     if (body) body.scrollTop = 0;
   });
-  // 通关弹窗「返回场景列表」：回到场景选择页（不触发碎片飞行）
+  // 通关弹窗「返回场景列表」：回到场景选择页（同时触发待飞行的碎片）
   document.getElementById('pzToList').addEventListener('click', function() {
     pzModal.classList.remove('show');
     pzCurrent = null;
     wsRefreshCards();
     pzRefresh();
     showView(worldSelView);
+    pzMaybeFly();
   });
   // Hub 拼图区按钮 / 全屏画面返回
   document.getElementById('pzViewBtn').addEventListener('click', function() {
